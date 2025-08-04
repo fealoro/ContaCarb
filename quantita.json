@@ -1,42 +1,74 @@
 [
   {
-    "nome": "Fetta di Zwieback",
-    "carbo": 9
+    "nome": "Calippo Cola",
+    "carbo": 21
   },
   {
-    "nome": "Magnum classico",
+    "nome": "Calippo Fragola",
     "carbo": 24
   },
   {
-    "nome": "Pacchetto Tuc",
-    "carbo": 30
+    "nome": "Calippo Lime",
+    "carbo": 21
   },
   {
-    "nome": "Yogurt frutta 125g",
-    "carbo": 15
+    "nome": "Calippo Orange",
+    "carbo": 24
   },
   {
-    "nome": "Kinder Cereali",
-    "carbo": 18
+    "nome": "Cono Stracciatella",
+    "carbo": 27
   },
   {
-    "nome": "Pane in cassetta (1 fetta)",
-    "carbo": 12
-  },
-  {
-    "nome": "Confezione di cracker",
+    "nome": "Coppa Cioccolato Coop",
     "carbo": 20
   },
   {
-    "nome": "Biscotto Oreo (1 pezzo)",
+    "nome": "Gocciole",
     "carbo": 8
   },
   {
-    "nome": "Barretta ai cereali",
-    "carbo": 16
+    "nome": "ICE Estathe",
+    "carbo": 13
   },
   {
-    "nome": "Pompelmo (1 frutto medio)",
-    "carbo": 18
+    "nome": "Kinder Bueno",
+    "carbo": 11
+  },
+  {
+    "nome": "Limonetta",
+    "carbo": 23
+  },
+  {
+    "nome": "Magnum",
+    "carbo": 24
+  },
+  {
+    "nome": "Magnum Mini",
+    "carbo": 13
+  },
+  {
+    "nome": "Nui Mini",
+    "carbo": 15
+  },
+  {
+    "nome": "Nutella B-Ready",
+    "carbo": 13
+  },
+  {
+    "nome": "Nutella Biscuits",
+    "carbo": 9
+  },
+  {
+    "nome": "Pirulo Mini",
+    "carbo": 9
+  },
+  {
+    "nome": "Polaretti",
+    "carbo": 9
+  },
+  {
+    "nome": "Razzo Rakete",
+    "carbo": 11
   }
 ]
