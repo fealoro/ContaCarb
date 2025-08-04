@@ -17,27 +17,27 @@
   },
   {
     "nome": "ananas con buccia",
-    "carbo": 6.25
+    "carbo": 6
   },
   {
     "nome": "ananas senza buccia",
-    "carbo": 11.11111111111111
+    "carbo": 11
   },
   {
     "nome": "anguria con buccia",
-    "carbo": 2.7777777777777777
+    "carbo": 3
   },
   {
     "nome": "anguria senza buccia",
-    "carbo": 6.25
+    "carbo": 6
   },
   {
     "nome": "arancia con buccia",
-    "carbo": 5.882352941176471
+    "carbo": 6
   },
   {
     "nome": "arancia senza buccia",
-    "carbo": 8.333333333333334
+    "carbo": 8
   },
   {
     "nome": "arrosto",
@@ -57,7 +57,7 @@
   },
   {
     "nome": "banana con buccia",
-    "carbo": 12.5
+    "carbo": 13
   },
   {
     "nome": "banana senza buccia",
@@ -85,11 +85,11 @@
   },
   {
     "nome": "cacomela",
-    "carbo": 13.333333333333334
+    "carbo": 13
   },
   {
     "nome": "carbonara",
-    "carbo": 18.75
+    "carbo": 19
   },
   {
     "nome": "carote, peperoni, finocchi, cetrioli",
@@ -141,7 +141,7 @@
   },
   {
     "nome": "cotoletta vegana",
-    "carbo": 16.666666666666668
+    "carbo": 17
   },
   {
     "nome": "cous cous alle verdure",
@@ -165,7 +165,7 @@
   },
   {
     "nome": "crostata",
-    "carbo": 66.66666666666667
+    "carbo": 67
   },
   {
     "nome": "crostini",
@@ -173,7 +173,7 @@
   },
   {
     "nome": "farro in insalata",
-    "carbo": 16.666666666666668
+    "carbo": 17
   },
   {
     "nome": "filetti di pesce",
@@ -197,11 +197,11 @@
   },
   {
     "nome": "fragole",
-    "carbo": 7.142857142857143
+    "carbo": 7
   },
   {
     "nome": "fragole con zucchero e limone",
-    "carbo": 8.333333333333334
+    "carbo": 8
   },
   {
     "nome": "focaccia",
@@ -225,47 +225,47 @@
   },
   {
     "nome": "gnocchi ai formaggi",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "gnocchi al pesto",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "gnocchi al pesto di zucca",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "gnocchi al pomodoro",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "gnocchi alla aurora",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "gnocchi alla romana",
-    "carbo": 16.666666666666668
+    "carbo": 17
   },
   {
     "nome": "gnocchi alla sorrentina",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "gnocchi burro e salvia",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "gnocchi con ragù",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "gnocchi panna e prosciutto",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "gnocchi radicchio e taleggio",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "grano cotto",
@@ -293,7 +293,7 @@
   },
   {
     "nome": "insalata di riso",
-    "carbo": 16.666666666666668
+    "carbo": 17
   },
   {
     "nome": "insalata mista",
@@ -305,7 +305,7 @@
   },
   {
     "nome": "kiwi",
-    "carbo": 8.695652173913043
+    "carbo": 9
   },
   {
     "nome": "lasagne",
@@ -325,7 +325,7 @@
   },
   {
     "nome": "leckerli",
-    "carbo": 76.92307692307692
+    "carbo": 77
   },
   {
     "nome": "lenticchie stufate",
@@ -337,7 +337,7 @@
   },
   {
     "nome": "macedonia",
-    "carbo": 8.333333333333334
+    "carbo": 8
   },
   {
     "nome": "madeleine",
@@ -345,7 +345,7 @@
   },
   {
     "nome": "mandarino",
-    "carbo": 6.666666666666667
+    "carbo": 7
   },
   {
     "nome": "mela",
@@ -357,7 +357,7 @@
   },
   {
     "nome": "melone con buccia",
-    "carbo": 6.451612903225806
+    "carbo": 6
   },
   {
     "nome": "melone senza buccia",
@@ -421,7 +421,7 @@
   },
   {
     "nome": "passato di verdura",
-    "carbo": 8.333333333333334
+    "carbo": 8
   },
   {
     "nome": "pasta",
@@ -433,7 +433,7 @@
   },
   {
     "nome": "pasta al forno",
-    "carbo": 16.666666666666664
+    "carbo": 17
   },
   {
     "nome": "pasta al pesto",
@@ -613,15 +613,15 @@
   },
   {
     "nome": "patate lesse",
-    "carbo": 16.666666666666668
+    "carbo": 17
   },
   {
     "nome": "patate in insalata",
-    "carbo": 16.666666666666668
+    "carbo": 17
   },
   {
     "nome": "patate bollite",
-    "carbo": 16.666666666666668
+    "carbo": 17
   },
   {
     "nome": "patate mantecate",
@@ -637,7 +637,7 @@
   },
   {
     "nome": "pera",
-    "carbo": 11.11111111111111
+    "carbo": 11
   },
   {
     "nome": "pesca con nocciolo",
@@ -645,7 +645,7 @@
   },
   {
     "nome": "pesca senza nocciolo",
-    "carbo": 9.090909090909092
+    "carbo": 9
   },
   {
     "nome": "pesce al forno",
@@ -669,19 +669,19 @@
   },
   {
     "nome": "pizza integrale",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "pizza",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "pizza libanese",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "pizza margherita",
-    "carbo": 33.333333333333336
+    "carbo": 33
   },
   {
     "nome": "pizzoccheri",
@@ -689,11 +689,11 @@
   },
   {
     "nome": "polenta",
-    "carbo": 13.333333333333334
+    "carbo": 13
   },
   {
     "nome": "polenta con sugo alle verdure",
-    "carbo": 13.333333333333334
+    "carbo": 13
   },
   {
     "nome": "polenta nostrana",
@@ -713,7 +713,7 @@
   },
   {
     "nome": "polpette di ceci",
-    "carbo": 16.666666666666668
+    "carbo": 17
   },
   {
     "nome": "polpettone con uova e zucchine",
@@ -741,7 +741,7 @@
   },
   {
     "nome": "prugna con nocciolo",
-    "carbo": 9.090909090909092
+    "carbo": 9
   },
   {
     "nome": "prugna senza nocciolo",
@@ -749,15 +749,15 @@
   },
   {
     "nome": "purè di patate",
-    "carbo": 12.5
+    "carbo": 13
   },
   {
     "nome": "purea di patate",
-    "carbo": 12.5
+    "carbo": 13
   },
   {
     "nome": "quiche lorraine",
-    "carbo": 16.666666666666668
+    "carbo": 17
   },
   {
     "nome": "ragù di verdure",
@@ -785,7 +785,7 @@
   },
   {
     "nome": "riso alla cantonese",
-    "carbo": 18.75
+    "carbo": 19
   },
   {
     "nome": "riso bianco",
@@ -801,7 +801,7 @@
   },
   {
     "nome": "riso in insalata",
-    "carbo": 16.666666666666668
+    "carbo": 17
   },
   {
     "nome": "riso integrale",
@@ -817,7 +817,7 @@
   },
   {
     "nome": "risotto agli asparagi",
-    "carbo": 28.571428571428573
+    "carbo": 29
   },
   {
     "nome": "risotto ai frutti di mare",
@@ -909,7 +909,7 @@
   },
   {
     "nome": "savoiardi",
-    "carbo": 66.66666666666667
+    "carbo": 67
   },
   {
     "nome": "scaloppina di pollo",
@@ -953,7 +953,7 @@
   },
   {
     "nome": "spaghetti integrali con ragù misto",
-    "carbo": 17.647058823529413
+    "carbo": 18
   },
   {
     "nome": "spaghetti vongole e cozze",
@@ -989,11 +989,11 @@
   },
   {
     "nome": "susina con nocciolo",
-    "carbo": 8.333333333333334
+    "carbo": 8
   },
   {
     "nome": "susina senza nocciolo",
-    "carbo": 9.090909090909092
+    "carbo": 9
   },
   {
     "nome": "tagliatelle",
@@ -1017,7 +1017,7 @@
   },
   {
     "nome": "torta salata",
-    "carbo": 16.666666666666668
+    "carbo": 17
   },
   {
     "nome": "tortelli burro e salvia",
@@ -1069,19 +1069,19 @@
   },
   {
     "nome": "uva",
-    "carbo": 15.384615384615385
+    "carbo": 15
   },
   {
     "nome": "vellutata",
-    "carbo": 8.333333333333334
+    "carbo": 8
   },
   {
     "nome": "vellutata di verdure",
-    "carbo": 8.333333333333334
+    "carbo": 8
   },
   {
     "nome": "vellutata di zucca",
-    "carbo": 8.333333333333334
+    "carbo": 8
   },
   {
     "nome": "verdura",
@@ -1129,7 +1129,7 @@
   },
   {
     "nome": "zuppa di verdure",
-    "carbo": 8.333333333333334
+    "carbo": 8
   },
   {
     "nome": "zwieback",
