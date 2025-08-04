@@ -1,5 +1,9 @@
 [
   {
+    "nome": "",
+    "carbo": null
+  },
+  {
     "nome": "albicocca con nocciolo",
     "carbo": 9
   },
@@ -418,6 +422,10 @@
   {
     "nome": "passato di verdura",
     "carbo": 8.333333333333334
+  },
+  {
+    "nome": "pasta",
+    "carbo": 20
   },
   {
     "nome": "pasta ai frutti di mare",
