@@ -89,7 +89,7 @@
       <input type="number" id="peso" placeholder="Es. 120">
     </div>
 
-    <div id="formQuantità" class="form-section">
+    <div id="formQuantita" class="form-section">
       <label for="quantitaInput">Scegli un alimento:</label>
       <input list="quantitaList" id="quantitaInput" placeholder="Digita per cercare...">
       <datalist id="quantitaList"></datalist>
@@ -112,7 +112,7 @@
       .then(data => {
         alimenti = data;
         const lista1 = document.getElementById("alimentiList");
-        alimenti.forEach(item => {
+        data.forEach(item => {
           const opt = document.createElement("option");
           opt.value = item.nome;
           lista1.appendChild(opt);
@@ -124,7 +124,7 @@
       .then(data => {
         quantita = data;
         const lista2 = document.getElementById("quantitaList");
-        quantita.forEach(item => {
+        data.forEach(item => {
           const opt = document.createElement("option");
           opt.value = item.nome;
           lista2.appendChild(opt);
@@ -134,12 +134,12 @@
     function toggleForm() {
       const tipo = document.querySelector('input[name="calcolo"]:checked').value;
       document.getElementById("formPeso").style.display = tipo === "peso" ? "block" : "none";
-      document.getElementById("formQuantità").style.display = tipo === "quantità" ? "block" : "none";
+      document.getElementById("formQuantita").style.display = tipo === "quantità" ? "block" : "none";
       document.getElementById("output").innerText = "";
     }
 
     function calcola() {
-      const tipo = document.querySelector('input[name="calcolo"]:checked").value;
+      const tipo = document.querySelector('input[name="calcolo"]:checked').value;
 
       if (tipo === "peso") {
         const nome = document.getElementById("alimentoInput").value;
