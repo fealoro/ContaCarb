@@ -1,6 +1,6 @@
 [
   {
-    "nome": "",
+    "nome": "Scegli",
     "carbo": null
   },
   {
@@ -222,6 +222,10 @@
   {
     "nome": "ghiacciolo polaretti",
     "carbo": 21
+  },
+  {
+    "nome": "gnocchi",
+    "carbo": 33
   },
   {
     "nome": "gnocchi ai formaggi",
