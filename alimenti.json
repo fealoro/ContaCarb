@@ -1,0 +1,42 @@
+[
+  {
+    "nome": "Pasta",
+    "carbo": 75
+  },
+  {
+    "nome": "Pane",
+    "carbo": 50
+  },
+  {
+    "nome": "Riso",
+    "carbo": 78
+  },
+  {
+    "nome": "Mela",
+    "carbo": 12
+  },
+  {
+    "nome": "Banana",
+    "carbo": 23
+  },
+  {
+    "nome": "Yogurt",
+    "carbo": 6
+  },
+  {
+    "nome": "Latte",
+    "carbo": 5
+  },
+  {
+    "nome": "Gohan (riso cotto giapponese)",
+    "carbo": 36
+  },
+  {
+    "nome": "Onigiri (medio)",
+    "carbo": 40
+  },
+  {
+    "nome": "Udon (bollito)",
+    "carbo": 27
+  }
+]

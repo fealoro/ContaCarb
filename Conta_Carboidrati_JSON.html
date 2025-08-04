@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Conta Carboidrati (con JSON)</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; max-width: 500px; }
+        label, select, input, button { font-size: 1.2em; margin: 10px 0; display: block; width: 100%; }
+        .result { margin-top: 20px; font-weight: bold; font-size: 1.3em; }
+    </style>
+</head>
+<body>
+    <h2>Conta Carboidrati</h2>
+
+    <label for="alimento">Scegli un alimento:</label>
+    <select id="alimento"></select>
+
+    <label for="peso">Inserisci il peso (in grammi):</label>
+    <input type="number" id="peso" placeholder="Es. 120">
+
+    <button onclick="calcola()">Calcola Carboidrati</button>
+
+    <div class="result" id="output"></div>
+
+    <script>
+        let alimenti = [];
+
+        fetch('alimenti.json')
+            .then(response => response.json())
+            .then(data => {
+                alimenti = data;
+                const select = document.getElementById("alimento");
+                alimenti.forEach(item => {
+                    const opt = document.createElement("option");
+                    opt.value = item.carbo;
+                    opt.textContent = item.nome + " (" + item.carbo + "g / 100g)";
+                    select.appendChild(opt);
+                });
+            })
+            .catch(error => {
+                document.getElementById("output").innerText = "Errore nel caricamento del database: " + error;
+            });
+
+        function calcola() {
+            const carboPer100 = parseFloat(document.getElementById("alimento").value);
+            const peso = parseFloat(document.getElementById("peso").value);
+            if (!isNaN(carboPer100) && !isNaN(peso)) {
+                const risultato = (carboPer100 * peso / 100).toFixed(1);
+                document.getElementById("output").innerText = "Carboidrati totali: " + risultato + " g";
+            } else {
+                document.getElementById("output").innerText = "Inserisci un peso valido.";
+            }
+        }
+    </script>
+</body>
+</html>
