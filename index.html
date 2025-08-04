@@ -34,7 +34,7 @@
             display: block;
         }
 
-        select, input {
+        input, select {
             width: 100%;
             padding: 10px;
             font-size: 1em;
@@ -67,11 +67,19 @@
             font-weight: bold;
             color: #28a745;
         }
+
+        #filtro {
+            margin-top: 6px;
+            margin-bottom: 12px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Conta Carboidrati</h2>
+
+        <label for="filtro">Cerca un alimento:</label>
+        <input type="text" id="filtro" placeholder="Scrivi per cercare..." oninput="filtraAlimenti()">
 
         <label for="alimento">Scegli un alimento:</label>
         <select id="alimento"></select>
@@ -86,28 +94,39 @@
 
     <script>
         let alimenti = [];
+        let select = document.getElementById("alimento");
 
         fetch('alimenti.json')
             .then(response => response.json())
             .then(data => {
                 alimenti = data;
-                const select = document.getElementById("alimento");
-                alimenti.forEach(item => {
-                    const opt = document.createElement("option");
-                    opt.value = item.carbo;
-                    opt.textContent = item.nome + " (" + item.carbo + "g / 100g)";
-                    select.appendChild(opt);
-                });
+                aggiornaSelect(alimenti);
             })
             .catch(error => {
                 document.getElementById("output").innerText = "Errore nel caricamento del database: " + error;
             });
 
+        function aggiornaSelect(lista) {
+            select.innerHTML = '';
+            lista.forEach(item => {
+                const opt = document.createElement("option");
+                opt.value = item.carbo;
+                opt.textContent = item.nome + " (" + item.carbo + "g / 100g)";
+                select.appendChild(opt);
+            });
+        }
+
+        function filtraAlimenti() {
+            const filtro = document.getElementById("filtro").value.toLowerCase();
+            const filtrati = alimenti.filter(item => item.nome.toLowerCase().includes(filtro));
+            aggiornaSelect(filtrati);
+        }
+
         function calcola() {
-            const carboPer100 = parseFloat(document.getElementById("alimento").value);
+            const carboPer100 = parseFloat(select.value);
             const peso = parseFloat(document.getElementById("peso").value);
             if (!isNaN(carboPer100) && !isNaN(peso)) {
-                const risultato = (carboPer100 * peso / 100).toFixed(1);
+                const risultato = Math.round(carboPer100 * peso / 100);
                 document.getElementById("output").innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + risultato + " g</span>";
             } else {
                 document.getElementById("output").innerText = "Inserisci un peso valido.";
