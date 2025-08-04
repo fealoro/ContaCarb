@@ -108,7 +108,7 @@
             const peso = parseFloat(document.getElementById("peso").value);
             if (!isNaN(carboPer100) && !isNaN(peso)) {
                 const risultato = (carboPer100 * peso / 100).toFixed(1);
-                document.getElementById("output").innerHTML = "🍞<br>Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + risultato + " g</span>";
+                document.getElementById("output").innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + risultato + " g</span>";
             } else {
                 document.getElementById("output").innerText = "Inserisci un peso valido.";
             }
