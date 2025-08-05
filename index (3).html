@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Conta Carboidrati</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f8f8;
+      color: #333;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: 600;
+      margin-top: 12px;
+      display: block;
+    }
+    input, select, datalist {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      font-size: 1.1em;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 1.6em;
+      font-weight: bold;
+      color: #28a745;
+    }
+    .option-group {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .form-section {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Conta Carboidrati</h2>
+
+    <label>Calcolo per:</label>
+    <div class="option-group">
+      <label><input type="radio" name="calcolo" value="peso" checked onclick="toggleForm()"> Peso</label>
+      <label><input type="radio" name="calcolo" value="quantità" onclick="toggleForm()"> Quantità</label>
+    </div>
+
+    <div id="formPeso" class="form-section" style="display: block;">
+      <label for="alimentoInput">Scegli un alimento:</label>
+      <input list="alimentiList" id="alimentoInput" placeholder="Digita per cercare...">
+      <datalist id="alimentiList"></datalist>
+
+      <label for="peso">Inserisci il peso (in grammi):</label>
+      <input type="number" id="peso" placeholder="Es. 120">
+    </div>
+
+    <div id="formQuantita" class="form-section">
+      <label for="quantitaInput">Scegli un alimento:</label>
+      <input list="quantitaList" id="quantitaInput" placeholder="Digita per cercare...">
+      <datalist id="quantitaList"></datalist>
+
+      <label for="numeroPorzioni">Numero di unità:</label>
+      <input type="number" id="numeroPorzioni" placeholder="Es. 3">
+    </div>
+
+    <button onclick="calcola()">Calcola Carboidrati</button>
+
+    <div class="result" id="output"></div>
+  </div>
+
+  <script>
+    let alimenti = [];
+    let quantita = [];
+
+    fetch('alimenti.json')
+      .then(response => response.json())
+      .then(data => {
+        alimenti = data;
+        const lista1 = document.getElementById("alimentiList");
+        data.forEach(item => {
+          const opt = document.createElement("option");
+          opt.value = item.nome;
+          lista1.appendChild(opt);
+        });
+      });
+
+    fetch('quantita.json')
+      .then(response => response.json())
+      .then(data => {
+        quantita = data;
+        const lista2 = document.getElementById("quantitaList");
+        data.forEach(item => {
+          const opt = document.createElement("option");
+          opt.value = item.nome;
+          lista2.appendChild(opt);
+        });
+      });
+
+    function toggleForm() {
+      const tipo = document.querySelector('input[name="calcolo"]:checked').value;
+      document.getElementById("formPeso").style.display = tipo === "peso" ? "block" : "none";
+      document.getElementById("formQuantita").style.display = tipo === "quantità" ? "block" : "none";
+      document.getElementById("output").innerText = "";
+    }
+
+    function calcola() {
+      const tipo = document.querySelector('input[name="calcolo"]:checked').value;
+
+      if (tipo === "peso") {
+        const nome = document.getElementById("alimentoInput").value;
+        const peso = parseFloat(document.getElementById("peso").value);
+        const alimento = alimenti.find(a => a.nome.toLowerCase() === nome.toLowerCase());
+
+        if (alimento && !isNaN(peso)) {
+          const risultato = Math.round(alimento.carbo * peso / 100);
+          document.getElementById("output").innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + risultato + " g</span>";
+        } else {
+          document.getElementById("output").innerText = "Inserisci valori validi.";
+        }
+      } else {
+        const nomeQ = document.getElementById("quantitaInput").value;
+        const n = parseFloat(document.getElementById("numeroPorzioni").value);
+        const alimentoQ = quantita.find(a => a.nome.toLowerCase() === nomeQ.toLowerCase());
+
+        if (alimentoQ && !isNaN(n)) {
+          const totale = Math.round(alimentoQ.carbo * n);
+          document.getElementById("output").innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + totale + " g</span>";
+        } else {
+          document.getElementById("output").innerText = "Inserisci valori validi.";
+        }
+      }
+    }
+
+    // Azzera i campi ogni volta che si seleziona un alimento
+    document.getElementById("alimentoInput").addEventListener("input", () => {
+      document.getElementById("peso").value = "";
+    });
+
+    document.getElementById("quantitaInput").addEventListener("input", () => {
+      document.getElementById("numeroPorzioni").value = "";
+    });
+  </script>
+</body>
+</html>
