@@ -9,14 +9,20 @@
     :root { --gap: 24px; --radius: 16px; --shadow: 0 4px 12px rgba(0,0,0,0.1); }
     html, body { height: 100%; }
     body {
-      font-family: system-ui, sans-serif; margin: 0; padding: 20px;
-      background-color: #f8f8f8; color: #333; min-height: 100dvh;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f8f8;
+      color: #333;
+      min-height: 100dvh;
+      transition: padding 0.15s ease;
     }
     h2 { text-align: center; margin-bottom: 10px; }
     .version { text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px; }
     .container {
       max-width: 500px; margin: auto; background: white; border-radius: var(--radius);
       padding: var(--gap); box-shadow: var(--shadow);
+      transition: padding 0.15s ease;
     }
     .tab-buttons { display: flex; justify-content: space-between; margin-bottom: 20px; gap: 6px; }
     .tab-button {
@@ -29,9 +35,8 @@
       width: 100%; padding: 12px; font-size: 1em; margin-top: 6px;
       border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;
     }
-
-    /* === Modalità overlay (fallback) === */
-    .suggestions-overlay {
+    /* Overlay suggerimenti (fixed) */
+    .suggestions {
       position: fixed; display: none; border: 1px solid #ccc; border-radius: 12px;
       overflow-y: auto; background: white; box-shadow: var(--shadow); z-index: 9999;
       max-height: 40vh;
@@ -39,25 +44,6 @@
     .suggestion { padding: 12px; cursor: pointer; }
     .suggestion + .suggestion { border-top: 1px solid #eee; }
     .suggestion:hover { background-color: #f5f7fb; }
-
-    /* === Modalità “foglio” (bottom sheet) === */
-    .sheet {
-      position: fixed; left: 0; right: 0; bottom: 0; z-index: 10000;
-      transform: translateY(100%); transition: transform 0.2s ease-out;
-      background: #fff; border-top-left-radius: 16px; border-top-right-radius: 16px;
-      box-shadow: 0 -6px 16px rgba(0,0,0,0.15);
-      max-height: 70dvh; display: flex; flex-direction: column;
-    }
-    .sheet.open { transform: translateY(0); }
-    .sheet-handle {
-      width: 44px; height: 5px; border-radius: 4px; background: #d0d0d0;
-      margin: 8px auto 10px auto;
-    }
-    .sheet-title { font-weight: 600; padding: 0 16px 8px 16px; }
-    .sheet-list { overflow-y: auto; border-top: 1px solid #eee; }
-    .sheet-item { padding: 14px 16px; cursor: pointer; }
-    .sheet-item + .sheet-item { border-top: 1px solid #f0f0f0; }
-    .sheet-item:active { background: #f5f7fb; }
 
     button {
       margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1em;
@@ -67,12 +53,20 @@
     .result { margin-top: 24px; text-align: center; font-size: 1.6em; font-weight: bold; color: #28a745; }
     .form-section { display: none; position: relative; }
     .safe-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+
+    /* --- Modalità "typing": comprime la UI per guadagnare spazio --- */
+    body.typing h2,
+    body.typing .version,
+    body.typing .tab-buttons { display: none; }
+    body.typing .container { padding: 12px; }
+    body.typing input { font-size: 0.95em; }
+    body.typing .result { display: none; } /* opzionale: nasconde il risultato mentre si digita */
   </style>
 </head>
 <body>
   <div class="container safe-bottom">
     <h2>Conta Carboidrati</h2>
-    <div class="version">v1.14 - 2025-08-16</div>
+    <div class="version">v1.13b - 2025-08-16</div>
 
     <div class="tab-buttons">
       <div id="tabPeso" class="tab-button active" onclick="selectTab('peso')">Peso</div>
@@ -82,8 +76,7 @@
     <div id="formPeso" class="form-section" style="display: block;">
       <label for="alimentoInput">Scegli un alimento:</label>
       <input id="alimentoInput" autocomplete="off" placeholder="Digita per cercare..." enterkeyhint="done" inputmode="search">
-      <!-- overlay fallback -->
-      <div id="suggerimentiPeso" class="suggestions-overlay" role="listbox" aria-label="Suggerimenti peso"></div>
+      <div id="suggerimentiPeso" class="suggestions" role="listbox" aria-label="Suggerimenti peso"></div>
 
       <label for="peso">Inserisci il peso (in grammi):</label>
       <input type="number" id="peso" placeholder="Es. 120" inputmode="decimal" enterkeyhint="done">
@@ -92,8 +85,7 @@
     <div id="formQuantita" class="form-section">
       <label for="quantitaInput">Scegli un alimento:</label>
       <input id="quantitaInput" autocomplete="off" placeholder="Digita per cercare..." enterkeyhint="done" inputmode="search">
-      <!-- overlay fallback -->
-      <div id="suggerimentiQuantita" class="suggestions-overlay" role="listbox" aria-label="Suggerimenti quantità"></div>
+      <div id="suggerimentiQuantita" class="suggestions" role="listbox" aria-label="Suggerimenti quantità"></div>
 
       <label for="numeroPorzioni">Numero di unità:</label>
       <input type="number" id="numeroPorzioni" placeholder="Es. 3" inputmode="numeric" enterkeyhint="done">
@@ -103,17 +95,7 @@
     <div class="result" id="output"></div>
   </div>
 
-  <!-- Bottom sheet riusabile per entrambe le tab -->
-  <div id="sheet" class="sheet" role="dialog" aria-modal="true" aria-label="Suggerimenti">
-    <div class="sheet-handle"></div>
-    <div id="sheetTitle" class="sheet-title"></div>
-    <div id="sheetList" class="sheet-list"></div>
-  </div>
-
   <script>
-    // === Config ===
-    const USE_SHEET = false; // <--- metti a false per usare l'overlay come v1.13
-
     let alimenti = [], quantita = [];
     let fuseAlimenti, fuseQuantita;
 
@@ -148,13 +130,15 @@
         if (el) el.value = "";
       });
       document.getElementById("output").innerText = "";
-      hideAllSuggestions();
+      hideSuggestions("suggerimentiPeso");
+      hideSuggestions("suggerimentiQuantita");
     }
 
-    // --- Overlay (fallback) ---
-    function positionOverlay(containerId, inputEl) {
+    // Posiziona il pannello suggerimenti come overlay fixed sotto l'input
+    function positionSuggestions(containerId, inputEl) {
       const cont = document.getElementById(containerId);
       if (!cont || !inputEl) return;
+
       const rect = inputEl.getBoundingClientRect();
       const vv = window.visualViewport;
       const viewportHeight = vv ? vv.height : window.innerHeight;
@@ -164,105 +148,45 @@
       cont.style.left = Math.round(rect.left) + "px";
       cont.style.width = Math.round(rect.width) + "px";
 
+      // Altezza massima tra il bottom dell'input e il bordo inferiore visibile (sopra la tastiera)
       const gap = 8;
       const maxH = Math.max(120, viewportHeight - rect.bottom - gap);
       cont.style.maxHeight = Math.round(maxH) + "px";
     }
 
-    // --- Bottom Sheet ---
-    const sheet = document.getElementById('sheet');
-    const sheetTitle = document.getElementById('sheetTitle');
-    const sheetList = document.getElementById('sheetList');
-    let currentSheetContext = null; // { inputId, isPeso }
+    function showSuggestions(fuse, query, containerId, inputId, isPeso) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
+      if (!fuse || !query) { hideSuggestions(containerId); return; }
 
-    function openSheet(title) {
-      sheetTitle.textContent = title || 'Suggerimenti';
-      sheet.classList.add('open');
-    }
-    function closeSheet() {
-      sheet.classList.remove('open');
-      sheetList.innerHTML = '';
-      currentSheetContext = null;
-    }
+      const results = fuse.search(query).slice(0, 8);
+      if (results.length === 0) { hideSuggestions(containerId); return; }
 
-    // Chiudi sheet al tap fuori (sopra il bordo superiore) o con ESC
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeSheet();
-    });
+      const inputEl = document.getElementById(inputId);
+      positionSuggestions(containerId, inputEl);
 
-    // Gestione click "fuori": se clic all'esterno del sheet mentre è aperto
-    document.addEventListener('click', (e) => {
-      if (!sheet.classList.contains('open')) return;
-      const path = e.composedPath ? e.composedPath() : [];
-      if (!path.includes(sheet)) closeSheet();
-    }, { passive: true });
-
-    function renderSuggestions(list, onPick) {
-      sheetList.innerHTML = '';
-      list.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'sheet-item';
-        div.textContent = item.nome;
-        div.onclick = () => onPick(item);
-        sheetList.appendChild(div);
-      });
-    }
-
-    function showSuggestions(fuse, query, overlayId, inputId, isPeso) {
-      // Nessuna ricerca => chiudi tutto
-      if (!fuse || !query) { hideAllSuggestions(); return; }
-
-      const results = fuse.search(query).slice(0, 12).map(r => r.item);
-      if (results.length === 0) { hideAllSuggestions(); return; }
-
-      if (USE_SHEET) {
-        const title = isPeso ? 'Scegli alimento (per peso)' : 'Scegli alimento (per quantità)';
-        currentSheetContext = { inputId, isPeso };
-        renderSuggestions(results, (item) => {
-          const inputEl = document.getElementById(inputId);
-          inputEl.value = item.nome;
-          // Valori di default + calcolo
-          if (isPeso) document.getElementById("peso").value = 100;
-          else document.getElementById("numeroPorzioni").value = 1;
-          closeSheet();
+      results.forEach(r => {
+        const div = document.createElement("div");
+        div.className = "suggestion";
+        div.textContent = r.item.nome;
+        div.role = "option";
+        div.onclick = () => {
+          inputEl.value = r.item.nome;
+          // Valori di default + calcolo immediato
+          if (isPeso) { document.getElementById("peso").value = 100; document.getElementById("peso")?.focus(); }
+          else { document.getElementById("numeroPorzioni").value = 1; document.getElementById("numeroPorzioni")?.focus(); }
+          hideSuggestions(containerId);
           calcola();
-          // focus sul campo successivo per editing rapido
-          if (isPeso) document.getElementById("peso")?.focus();
-          else document.getElementById("numeroPorzioni")?.focus();
-        });
-        openSheet(title);
-      } else {
-        // Overlay come in v1.13
-        const container = document.getElementById(overlayId);
-        container.innerHTML = '';
-        const inputEl = document.getElementById(inputId);
-        positionOverlay(overlayId, inputEl);
-        results.forEach(item => {
-          const div = document.createElement('div');
-          div.className = 'suggestion';
-          div.textContent = item.nome;
-          div.onclick = () => {
-            inputEl.value = item.nome;
-            if (isPeso) document.getElementById("peso").value = 100;
-            else document.getElementById("numeroPorzioni").value = 1;
-            container.style.display = 'none';
-            calcola();
-            if (isPeso) document.getElementById("peso")?.focus();
-            else document.getElementById("numeroPorzioni")?.focus();
-          };
-          container.appendChild(div);
-        });
-      }
+        };
+        container.appendChild(div);
+      });
     }
 
-    function hideAllSuggestions() {
-      // Overlay
-      ['suggerimentiPeso','suggerimentiQuantita'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) { el.style.display = 'none'; el.innerHTML = ''; }
-      });
-      // Sheet
-      closeSheet();
+    function hideSuggestions(id) {
+      const container = document.getElementById(id);
+      if (!container) return;
+      container.style.display = "none";
+      container.innerHTML = "";
     }
 
     function calcola() {
@@ -282,33 +206,44 @@
     }
 
     // --- Miglioramenti mobile ---
-    // Scroll al centro quando un input va in focus (evita copertura tastiera)
+    // 1) Modalità typing ON/OFF
     document.querySelectorAll("input").forEach(el => {
-      el.addEventListener("focus", () => {
-        setTimeout(() => { el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 150);
-      });
-      // Chiudi suggerimenti quando perdi il focus (piccolo delay per consentire il tap)
-      el.addEventListener("blur", () => {
-        setTimeout(() => { hideAllSuggestions(); }, 150);
-      });
+      el.addEventListener("focus", () => document.body.classList.add("typing"));
+      el.addEventListener("blur",  () => setTimeout(() => document.body.classList.remove("typing"), 150));
     });
 
-    // Se non usi il sheet, riposiziona overlay quando cambia la viewport visibile (tastiera su/giù)
-    const vv = window.visualViewport;
-    if (vv && !USE_SHEET) {
-      vv.addEventListener("resize", () => {
-        const a = document.activeElement;
-        if (a?.id === "alimentoInput") positionOverlay("suggerimentiPeso", a);
-        if (a?.id === "quantitaInput") positionOverlay("suggerimentiQuantita", a);
-      });
-      vv.addEventListener("scroll", () => {
-        const a = document.activeElement;
-        if (a?.id === "alimentoInput") positionOverlay("suggerimentiPeso", a);
-        if (a?.id === "quantitaInput") positionOverlay("suggerimentiQuantita", a);
-      });
+    // 2) Scrolla l'input in ALTO quando riceve focus (così la lista sotto è più visibile)
+    function bringInputHigh(el) {
+      // attende che la tastiera compaia, poi porta l'elemento in alto
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        // piccolo offset per non appiccicare proprio al bordo
+        window.scrollBy({ top: -8, left: 0, behavior: "instant" });
+      }, 180);
+    }
+    ["alimentoInput","quantitaInput","peso","numeroPorzioni"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("focus", () => bringInputHigh(el));
+    });
+
+    // 3) Padding-bottom dinamico pari all'area "occlusa" dalla tastiera
+    const vv2 = window.visualViewport;
+    function adjustForKeyboard() {
+      if (!vv2) return;
+      const occluded = Math.max(0, window.innerHeight - vv2.height);
+      document.body.style.paddingBottom = (occluded ? (occluded + 8) : 0) + "px";
+      // riposiziona eventualmente i suggerimenti per l'input attivo
+      const a = document.activeElement;
+      if (a?.id === "alimentoInput") positionSuggestions("suggerimentiPeso", a);
+      if (a?.id === "quantitaInput") positionSuggestions("suggerimentiQuantita", a);
+    }
+    if (vv2) {
+      vv2.addEventListener("resize", adjustForKeyboard);
+      vv2.addEventListener("scroll", adjustForKeyboard);
+      adjustForKeyboard();
     }
 
-    // Comportamento già presente: svuota valori quando entri nei campi numerici
+    // Comportamento di v1.12: svuota valori quando entri nei campi numerici
     document.getElementById("peso").addEventListener("focus", () => { document.getElementById("peso").value = ""; });
     document.getElementById("numeroPorzioni").addEventListener("focus", () => { document.getElementById("numeroPorzioni").value = ""; });
 
@@ -330,12 +265,13 @@
       showSuggestions(fuseQuantita, e.target.value, "suggerimentiQuantita", "quantitaInput", false);
     });
 
-    // Chiudi tutto al tap fuori dagli input/suggerimenti (utile in overlay)
+    // Chiudi suggerimenti al tap fuori
     document.addEventListener("click", (e) => {
       const t = e.target;
       if (!t.closest || (!t.closest("#alimentoInput") && !t.closest("#quantitaInput")
-          && !t.closest("#suggerimentiPeso") && !t.closest("#suggerimentiQuantita") && !t.closest("#sheet"))) {
-        hideAllSuggestions();
+          && !t.closest("#suggerimentiPeso") && !t.closest("#suggerimentiQuantita"))) {
+        hideSuggestions("suggerimentiPeso");
+        hideSuggestions("suggerimentiQuantita");
       }
     }, { passive: true });
   </script>
