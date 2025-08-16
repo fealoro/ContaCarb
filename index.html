@@ -6,35 +6,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
   <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
   <style>
-    /* --- v1.12 base --- */
     body {font-family: system-ui, sans-serif; margin: 0; padding: 20px; background-color: #f8f8f8; color: #333;}
     h2 {text-align: center; margin-bottom: 10px;}
     .version {text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px;}
-    .container {max-width: 500px; margin: auto; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);} 
-    .tab-buttons {display: flex; justify-content: space-between; margin-bottom: 20px;} 
-    .tab-button {flex: 1; text-align: center; padding: 12px; background-color: #e0e0e0; border: 1px solid #ccc; cursor: pointer; border-radius: 8px; margin-right: 6px; font-weight: bold;} 
-    .tab-button:last-child {margin-right: 0;} 
-    .tab-button.active {background-color: #007bff; color: white; border-color: #007bff;} 
-    label {font-weight: 600; margin-top: 12px; display: block;} 
-    input {width: 100%; padding: 10px; font-size: 1em; margin-top: 6px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;} 
-    .suggestions {border: 1px solid #ccc; border-top: none; max-height: 150px; overflow-y: auto; background: white; position: absolute; width: 100%; z-index: 999;} 
-    .suggestion {padding: 10px; cursor: pointer;} 
-    .suggestion:hover {background-color: #f0f0f0;} 
-    button {margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1em; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;} 
-    button:hover {background-color: #0056b3;} 
-    .result {margin-top: 24px; text-align: center; font-size: 1.6em; font-weight: bold; color: #28a745;} 
-    .form-section {display: none; position: relative;} 
+    .container {max-width: 500px; margin: auto; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);}
+    .tab-buttons {display: flex; justify-content: space-between; margin-bottom: 20px;}
+    .tab-button {flex: 1; text-align: center; padding: 12px; background-color: #e0e0e0; border: 1px solid #ccc; cursor: pointer; border-radius: 8px; margin-right: 6px; font-weight: bold;}
+    .tab-button:last-child {margin-right: 0;}
+    .tab-button.active {background-color: #007bff; color: white; border-color: #007bff;}
+    label {font-weight: 600; margin-top: 12px; display: block;}
+    input {width: 100%; padding: 10px; font-size: 1em; margin-top: 6px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;}
+    .suggestions {border: 1px solid #ccc; border-top: none; max-height: 150px; overflow-y: auto; background: white; position: absolute; width: 100%; z-index: 999;}
+    .suggestion {padding: 10px; cursor: pointer;}
+    .suggestion:hover {background-color: #f0f0f0;}
+    button {margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1em; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;}
+    button:hover {background-color: #0056b3;}
+    .result {margin-top: 24px; text-align: center; font-size: 1.6em; font-weight: bold; color: #28a745;}
+    .form-section {display: none; position: relative;}
 
-    /* Spazio extra per poter scrollare con tastiera su */
+    /* --- patch per scroll su mobile (soluzione 3) --- */
     html, body { min-height: 120dvh; }
-    /* Margine di sicurezza quando usiamo scrollIntoView (fallback) */
     #alimentoInput, #quantitaInput, #peso, #numeroPorzioni { scroll-margin-top: 12vh; }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Conta Carboidrati</h2>
-    <div class="version">v1.12h - 2025-08-16</div>
+    <div class="version">v1.12c - 2025-08-16</div>
 
     <div class="tab-buttons">
       <div id="tabPeso" class="tab-button active" onclick="selectTab('peso')">Peso</div>
@@ -152,66 +150,68 @@
     // Invio con Enter
     document.querySelectorAll('#peso, #numeroPorzioni, #alimentoInput, #quantitaInput').forEach(el => {
       el.addEventListener('keydown', e => {
-        if (e.key === 'Enter') { e.preventDefault(); calcola(); }
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          calcola();
+        }
       });
     });
 
     /* ============================
-       SCROLL UNA-TANTUM (Samsung fix)
+       SOLUZIONE 3 - SCROLL ROBUSTO
        ============================ */
-    const UA = navigator.userAgent || navigator.vendor || '';
-    const isAndroid  = /Android/i.test(UA);
-    const isSamsung  = /Samsung|SM-|SAMSUNG|One UI|SamsungBrowser/i.test(UA) && isAndroid;
-    const isIOS      = /iPhone|iPad|iPod/i.test(UA);
-
-    function setBottomPaddingOnce() {
+    function stableAfterKeyboard(callback) {
       const vv = window.visualViewport;
-      if (!vv) return;
-      const occluded = Math.max(0, window.innerHeight - vv.height);
-      document.body.style.paddingBottom = (occluded ? occluded + 12 : 0) + "px";
+      if (!vv) { callback(); return; }
+
+      let lastH = vv.height, stableCount = 0, tries = 0;
+      const tick = () => {
+        tries++;
+        if (vv.height === lastH) stableCount++; else { stableCount = 0; lastH = vv.height; }
+        if (stableCount >= 2 || tries > 20) callback();
+        else requestAnimationFrame(tick);
+      };
+      tick();
     }
 
-    function scrollInputOnce(el, offset = 14) {
-      const rect = el.getBoundingClientRect();
-      const y = Math.max(0, (window.scrollY || window.pageYOffset) + rect.top - offset);
-      const scroller = document.scrollingElement || document.documentElement || document.body;
-      // nessuna animazione: riduce il rischio di “ritorni”
-      if (typeof scroller.scrollTo === 'function') scroller.scrollTo(0, y);
-      else window.scrollTo(0, y);
-    }
+    function bringInputHigh(el, extraOffset = 8) {
+      window.scrollBy(0, 1); window.scrollBy(0, -1);
 
-    function handleFocusOneShot(el) {
-      const vv = window.visualViewport;
+      stableAfterKeyboard(() => {
+        const scroller = document.scrollingElement || document.documentElement || document.body;
+        const rect = el.getBoundingClientRect();
 
-      if (isSamsung && vv) {
-        // Su Samsung: ascolta SOLO il primo resize (tastiera su), poi scrolla e basta
-        const doOnce = () => {
-          setBottomPaddingOnce();
-          // piccolo tempo per fine animazione tastiera
-          setTimeout(() => scrollInputOnce(el, 16), 60);
-        };
-        vv.addEventListener('resize', doOnce, { once: true });
+        const vv = window.visualViewport;
+        if (vv) {
+          const occluded = Math.max(0, window.innerHeight - vv.height);
+          document.body.style.paddingBottom = (occluded ? occluded + 16 : 0) + "px";
+        }
 
-        // Fallback: se per qualche motivo non arriva il resize, prova comunque dopo 450ms
-        setTimeout(() => {
-          try { vv.removeEventListener('resize', doOnce); } catch(e) {}
-          setBottomPaddingOnce();
-          scrollInputOnce(el, 16);
-        }, 450);
-      } else {
-        // iOS/altro Android: un delay breve è sufficiente
-        const delay = isIOS ? 180 : 220;
-        setTimeout(() => { setBottomPaddingOnce(); scrollInputOnce(el, isIOS ? 10 : 12); }, delay);
-      }
+        const targetY = (window.scrollY || window.pageYOffset) + rect.top - extraOffset;
+        const y = Math.max(0, targetY);
+
+        if (typeof scroller.scrollTo === 'function') scroller.scrollTo({ top: y, behavior: 'smooth' });
+        else window.scrollTo(0, y);
+
+        setTimeout(() => { el.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 120);
+      });
     }
 
     ['alimentoInput','quantitaInput','peso','numeroPorzioni'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      el.addEventListener('focus', () => handleFocusOneShot(el));
+      el.addEventListener('focus', () => bringInputHigh(el));
       el.addEventListener('blur',  () => { document.body.style.paddingBottom = ''; });
     });
-    /* ========= FINE PATCH ========= */
+
+    if (window.visualViewport) {
+      const reScrollIfFocused = () => {
+        const a = document.activeElement;
+        if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA')) bringInputHigh(a);
+      };
+      visualViewport.addEventListener('resize', reScrollIfFocused);
+      visualViewport.addEventListener('scroll', reScrollIfFocused);
+    }
   </script>
 </body>
 </html>
