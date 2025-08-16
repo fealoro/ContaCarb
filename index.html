@@ -3,70 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <title>Conta Carboidrati</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
   <style>
-    :root { --gap: 24px; --radius: 16px; --shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    html, body { height: 100%; }
-    body {
-      font-family: system-ui, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: #f8f8f8;
-      color: #333;
-      min-height: 100dvh;
-      transition: padding 0.15s ease;
-    }
-    h2 { text-align: center; margin-bottom: 10px; }
-    .version { text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px; }
-    .container {
-      max-width: 500px; margin: auto; background: white; border-radius: var(--radius);
-      padding: var(--gap); box-shadow: var(--shadow);
-      transition: padding 0.15s ease;
-    }
-    .tab-buttons { display: flex; justify-content: space-between; margin-bottom: 20px; gap: 6px; }
-    .tab-button {
-      flex: 1; text-align: center; padding: 12px; background-color: #e0e0e0;
-      border: 1px solid #ccc; cursor: pointer; border-radius: 8px; font-weight: bold; user-select: none;
-    }
-    .tab-button.active { background-color: #007bff; color: white; border-color: #007bff; }
-    label { font-weight: 600; margin-top: 12px; display: block; }
-    input {
-      width: 100%; padding: 12px; font-size: 1em; margin-top: 6px;
-      border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;
-    }
-    /* Overlay suggerimenti (fixed) */
-    .suggestions {
-      position: fixed; display: none; border: 1px solid #ccc; border-radius: 12px;
-      overflow-y: auto; background: white; box-shadow: var(--shadow); z-index: 9999;
-      max-height: 40vh;
-    }
-    .suggestion { padding: 12px; cursor: pointer; }
-    .suggestion + .suggestion { border-top: 1px solid #eee; }
-    .suggestion:hover { background-color: #f5f7fb; }
-
-    button {
-      margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1em;
-      background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;
-    }
-    button:hover { background-color: #0056b3; }
-    .result { margin-top: 24px; text-align: center; font-size: 1.6em; font-weight: bold; color: #28a745; }
-    .form-section { display: none; position: relative; }
-    .safe-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
-
-    /* --- Modalità "typing": comprime la UI per guadagnare spazio --- */
-    body.typing h2,
-    body.typing .version,
-    body.typing .tab-buttons { display: none; }
-    body.typing .container { padding: 12px; }
-    body.typing input { font-size: 0.95em; }
-    body.typing .result { display: none; } /* opzionale: nasconde il risultato mentre si digita */
+    body {font-family: system-ui, sans-serif; margin: 0; padding: 20px; background-color: #f8f8f8; color: #333;}
+    h2 {text-align: center; margin-bottom: 10px;}
+    .version {text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px;}
+    .container {max-width: 500px; margin: auto; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);} 
+    .tab-buttons {display: flex; justify-content: space-between; margin-bottom: 20px;} 
+    .tab-button {flex: 1; text-align: center; padding: 12px; background-color: #e0e0e0; border: 1px solid #ccc; cursor: pointer; border-radius: 8px; margin-right: 6px; font-weight: bold;} 
+    .tab-button:last-child {margin-right: 0;} 
+    .tab-button.active {background-color: #007bff; color: white; border-color: #007bff;} 
+    label {font-weight: 600; margin-top: 12px; display: block;} 
+    input {width: 100%; padding: 10px; font-size: 1em; margin-top: 6px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;} 
+    .suggestions {border: 1px solid #ccc; border-top: none; max-height: 150px; overflow-y: auto; background: white; position: absolute; width: 100%; z-index: 999;} 
+    .suggestion {padding: 10px; cursor: pointer;} 
+    .suggestion:hover {background-color: #f0f0f0;} 
+    button {margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1em; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;} 
+    button:hover {background-color: #0056b3;} 
+    .result {margin-top: 24px; text-align: center; font-size: 1.6em; font-weight: bold; color: #28a745;} 
+    .form-section {display: none; position: relative;} 
   </style>
 </head>
 <body>
-  <div class="container safe-bottom">
+  <div class="container">
     <h2>Conta Carboidrati</h2>
-    <div class="version">v1.13b - 2025-08-16</div>
+    <div class="version">v1.12 - 2025-08-10</div>
 
     <div class="tab-buttons">
       <div id="tabPeso" class="tab-button active" onclick="selectTab('peso')">Peso</div>
@@ -75,20 +37,20 @@
 
     <div id="formPeso" class="form-section" style="display: block;">
       <label for="alimentoInput">Scegli un alimento:</label>
-      <input id="alimentoInput" autocomplete="off" placeholder="Digita per cercare..." enterkeyhint="done" inputmode="search">
-      <div id="suggerimentiPeso" class="suggestions" role="listbox" aria-label="Suggerimenti peso"></div>
+      <input id="alimentoInput" autocomplete="off" placeholder="Digita per cercare...">
+      <div id="suggerimentiPeso" class="suggestions"></div>
 
       <label for="peso">Inserisci il peso (in grammi):</label>
-      <input type="number" id="peso" placeholder="Es. 120" inputmode="decimal" enterkeyhint="done">
+      <input type="number" id="peso" placeholder="Es. 120">
     </div>
 
     <div id="formQuantita" class="form-section">
       <label for="quantitaInput">Scegli un alimento:</label>
-      <input id="quantitaInput" autocomplete="off" placeholder="Digita per cercare..." enterkeyhint="done" inputmode="search">
-      <div id="suggerimentiQuantita" class="suggestions" role="listbox" aria-label="Suggerimenti quantità"></div>
+      <input id="quantitaInput" autocomplete="off" placeholder="Digita per cercare...">
+      <div id="suggerimentiQuantita" class="suggestions"></div>
 
       <label for="numeroPorzioni">Numero di unità:</label>
-      <input type="number" id="numeroPorzioni" placeholder="Es. 3" inputmode="numeric" enterkeyhint="done">
+      <input type="number" id="numeroPorzioni" placeholder="Es. 3">
     </div>
 
     <button onclick="calcola()">Calcola Carboidrati</button>
@@ -99,17 +61,16 @@
     let alimenti = [], quantita = [];
     let fuseAlimenti, fuseQuantita;
 
-    // Caricamento dati
     fetch('alimenti.json').then(r => r.json()).then(data => {
       alimenti = data;
       fuseAlimenti = new Fuse(data, { keys: ['nome'], threshold: 0.3 });
     });
+
     fetch('quantita.json').then(r => r.json()).then(data => {
       quantita = data;
       fuseQuantita = new Fuse(data, { keys: ['nome'], threshold: 0.3 });
     });
 
-    // Gestione tab
     function selectTab(tipo) {
       document.getElementById("tabPeso").classList.remove("active");
       document.getElementById("tabQuantita").classList.remove("active");
@@ -124,156 +85,73 @@
         document.getElementById("formQuantita").style.display = "block";
       }
 
-      // Pulisci campi e UI
-      ["alimentoInput","peso","quantitaInput","numeroPorzioni"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = "";
-      });
+      document.getElementById("alimentoInput").value = "";
+      document.getElementById("peso").value = "";
+      document.getElementById("quantitaInput").value = "";
+      document.getElementById("numeroPorzioni").value = "";
       document.getElementById("output").innerText = "";
-      hideSuggestions("suggerimentiPeso");
-      hideSuggestions("suggerimentiQuantita");
-    }
-
-    // Posiziona il pannello suggerimenti come overlay fixed sotto l'input
-    function positionSuggestions(containerId, inputEl) {
-      const cont = document.getElementById(containerId);
-      if (!cont || !inputEl) return;
-
-      const rect = inputEl.getBoundingClientRect();
-      const vv = window.visualViewport;
-      const viewportHeight = vv ? vv.height : window.innerHeight;
-
-      cont.style.display = "block";
-      cont.style.top = Math.round(rect.bottom + 4) + "px";
-      cont.style.left = Math.round(rect.left) + "px";
-      cont.style.width = Math.round(rect.width) + "px";
-
-      // Altezza massima tra il bottom dell'input e il bordo inferiore visibile (sopra la tastiera)
-      const gap = 8;
-      const maxH = Math.max(120, viewportHeight - rect.bottom - gap);
-      cont.style.maxHeight = Math.round(maxH) + "px";
+      clearSuggestions("suggerimentiPeso");
+      clearSuggestions("suggerimentiQuantita");
     }
 
     function showSuggestions(fuse, query, containerId, inputId, isPeso) {
+      const results = fuse.search(query).slice(0, 5);
       const container = document.getElementById(containerId);
-      container.innerHTML = "";
-      if (!fuse || !query) { hideSuggestions(containerId); return; }
-
-      const results = fuse.search(query).slice(0, 8);
-      if (results.length === 0) { hideSuggestions(containerId); return; }
-
-      const inputEl = document.getElementById(inputId);
-      positionSuggestions(containerId, inputEl);
-
+      clearSuggestions(containerId);
       results.forEach(r => {
         const div = document.createElement("div");
         div.className = "suggestion";
         div.textContent = r.item.nome;
-        div.role = "option";
         div.onclick = () => {
-          inputEl.value = r.item.nome;
-          // Valori di default + calcolo immediato
-          if (isPeso) { document.getElementById("peso").value = 100; document.getElementById("peso")?.focus(); }
-          else { document.getElementById("numeroPorzioni").value = 1; document.getElementById("numeroPorzioni")?.focus(); }
-          hideSuggestions(containerId);
+          document.getElementById(inputId).value = r.item.nome;
+          clearSuggestions(containerId);
+          if (isPeso) {
+            document.getElementById("peso").value = 100;
+          } else {
+            document.getElementById("numeroPorzioni").value = 1;
+          }
           calcola();
         };
         container.appendChild(div);
       });
     }
 
-    function hideSuggestions(id) {
-      const container = document.getElementById(id);
-      if (!container) return;
-      container.style.display = "none";
-      container.innerHTML = "";
-    }
+    function clearSuggestions(id) { document.getElementById(id).innerHTML = ""; }
 
     function calcola() {
       const isPeso = document.getElementById("formPeso").style.display === "block";
       const nome = isPeso ? document.getElementById("alimentoInput").value : document.getElementById("quantitaInput").value;
       const inputVal = isPeso ? parseFloat(document.getElementById("peso").value) : parseFloat(document.getElementById("numeroPorzioni").value);
-      const dataset = isPeso ? (fuseAlimenti ? fuseAlimenti.search(nome) : []) : (fuseQuantita ? fuseQuantita.search(nome) : []);
+      const dataset = isPeso ? fuseAlimenti.search(nome) : fuseQuantita.search(nome);
       const alimento = dataset.length > 0 ? dataset[0].item : null;
 
       if (alimento && !isNaN(inputVal)) {
         const carbo = isPeso ? Math.round(alimento.carbo * inputVal / 100) : Math.round(alimento.carbo * inputVal);
-        document.getElementById("output").innerHTML =
-          "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + carbo + " g</span>";
+        document.getElementById("output").innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + carbo + " g</span>";
       } else {
         document.getElementById("output").innerText = "Inserisci valori validi.";
       }
     }
 
-    // --- Miglioramenti mobile ---
-    // 1) Modalità typing ON/OFF
-    document.querySelectorAll("input").forEach(el => {
-      el.addEventListener("focus", () => document.body.classList.add("typing"));
-      el.addEventListener("blur",  () => setTimeout(() => document.body.classList.remove("typing"), 150));
+    document.getElementById("alimentoInput").addEventListener("input", e => {
+      showSuggestions(fuseAlimenti, e.target.value, "suggerimentiPeso", "alimentoInput", true);
+    });
+    document.getElementById("quantitaInput").addEventListener("input", e => {
+      showSuggestions(fuseQuantita, e.target.value, "suggerimentiQuantita", "quantitaInput", false);
     });
 
-    // 2) Scrolla l'input in ALTO quando riceve focus (così la lista sotto è più visibile)
-    function bringInputHigh(el) {
-      // attende che la tastiera compaia, poi porta l'elemento in alto
-      setTimeout(() => {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-        // piccolo offset per non appiccicare proprio al bordo
-        window.scrollBy({ top: -8, left: 0, behavior: "instant" });
-      }, 180);
-    }
-    ["alimentoInput","quantitaInput","peso","numeroPorzioni"].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener("focus", () => bringInputHigh(el));
-    });
-
-    // 3) Padding-bottom dinamico pari all'area "occlusa" dalla tastiera
-    const vv2 = window.visualViewport;
-    function adjustForKeyboard() {
-      if (!vv2) return;
-      const occluded = Math.max(0, window.innerHeight - vv2.height);
-      document.body.style.paddingBottom = (occluded ? (occluded + 8) : 0) + "px";
-      // riposiziona eventualmente i suggerimenti per l'input attivo
-      const a = document.activeElement;
-      if (a?.id === "alimentoInput") positionSuggestions("suggerimentiPeso", a);
-      if (a?.id === "quantitaInput") positionSuggestions("suggerimentiQuantita", a);
-    }
-    if (vv2) {
-      vv2.addEventListener("resize", adjustForKeyboard);
-      vv2.addEventListener("scroll", adjustForKeyboard);
-      adjustForKeyboard();
-    }
-
-    // Comportamento di v1.12: svuota valori quando entri nei campi numerici
     document.getElementById("peso").addEventListener("focus", () => { document.getElementById("peso").value = ""; });
     document.getElementById("numeroPorzioni").addEventListener("focus", () => { document.getElementById("numeroPorzioni").value = ""; });
 
     // Invio con Enter
     document.querySelectorAll('#peso, #numeroPorzioni, #alimentoInput, #quantitaInput').forEach(el => {
       el.addEventListener('keydown', e => {
-        if (e.key === 'Enter') { e.preventDefault(); calcola(); }
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          calcola();
+        }
       });
     });
-
-    // Eventi input per mostrare suggerimenti
-    const alimentoInput = document.getElementById("alimentoInput");
-    const quantitaInput = document.getElementById("quantitaInput");
-
-    alimentoInput.addEventListener("input", e => {
-      showSuggestions(fuseAlimenti, e.target.value, "suggerimentiPeso", "alimentoInput", true);
-    });
-    quantitaInput.addEventListener("input", e => {
-      showSuggestions(fuseQuantita, e.target.value, "suggerimentiQuantita", "quantitaInput", false);
-    });
-
-    // Chiudi suggerimenti al tap fuori
-    document.addEventListener("click", (e) => {
-      const t = e.target;
-      if (!t.closest || (!t.closest("#alimentoInput") && !t.closest("#quantitaInput")
-          && !t.closest("#suggerimentiPeso") && !t.closest("#suggerimentiQuantita"))) {
-        hideSuggestions("suggerimentiPeso");
-        hideSuggestions("suggerimentiQuantita");
-      }
-    }, { passive: true });
   </script>
 </body>
 </html>
