@@ -6,35 +6,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
   <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
   <style>
-    /* --- v1.12 base --- */
     body {font-family: system-ui, sans-serif; margin: 0; padding: 20px; background-color: #f8f8f8; color: #333;}
     h2 {text-align: center; margin-bottom: 10px;}
     .version {text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px;}
-    .container {max-width: 500px; margin: auto; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);}
-    .tab-buttons {display: flex; justify-content: space-between; margin-bottom: 20px;}
-    .tab-button {flex: 1; text-align: center; padding: 12px; background-color: #e0e0e0; border: 1px solid #ccc; cursor: pointer; border-radius: 8px; margin-right: 6px; font-weight: bold;}
-    .tab-button:last-child {margin-right: 0;}
-    .tab-button.active {background-color: #007bff; color: white; border-color: #007bff;}
-    label {font-weight: 600; margin-top: 12px; display: block;}
-    input {width: 100%; padding: 10px; font-size: 1em; margin-top: 6px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;}
-    .suggestions {border: 1px solid #ccc; border-top: none; max-height: 150px; overflow-y: auto; background: white; position: absolute; width: 100%; z-index: 999;}
-    .suggestion {padding: 10px; cursor: pointer;}
-    .suggestion:hover {background-color: #f0f0f0;}
-    button {margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1em; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;}
-    button:hover {background-color: #0056b3;}
-    .result {margin-top: 24px; text-align: center; font-size: 1.6em; font-weight: bold; color: #28a745;}
-    .form-section {display: none; position: relative;}
+    .container {max-width: 500px; margin: auto; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);} 
+    .tab-buttons {display: flex; justify-content: space-between; margin-bottom: 20px;} 
+    .tab-button {flex: 1; text-align: center; padding: 12px; background-color: #e0e0e0; border: 1px solid #ccc; cursor: pointer; border-radius: 8px; margin-right: 6px; font-weight: bold;} 
+    .tab-button:last-child {margin-right: 0;} 
+    .tab-button.active {background-color: #007bff; color: white; border-color: #007bff;} 
+    label {font-weight: 600; margin-top: 12px; display: block;} 
+    input {width: 100%; padding: 10px; font-size: 1em; margin-top: 6px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;} 
+    .suggestions {border: 1px solid #ccc; border-top: none; max-height: 150px; overflow-y: auto; background: white; position: absolute; width: 100%; z-index: 999;} 
+    .suggestion {padding: 10px; cursor: pointer;} 
+    .suggestion:hover {background-color: #f0f0f0;} 
+    button {margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1em; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;} 
+    button:hover {background-color: #0056b3;} 
+    .result {margin-top: 24px; text-align: center; font-size: 1.6em; font-weight: bold; color: #28a745;} 
+    .form-section {display: none; position: relative;} 
 
-    /* --- patch per scroll su mobile (restando soluzione 3) --- */
-    html, body { min-height: 120dvh; } /* spazio extra per permettere lo scroll anche con tastiera */
-    /* aiuta scrollIntoView a lasciare margine sopra */
+    /* patch per scroll stabile */
+    html, body { min-height: 120dvh; }
     #alimentoInput, #quantitaInput, #peso, #numeroPorzioni { scroll-margin-top: 12vh; }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Conta Carboidrati</h2>
-    <div class="version">v1.12d - 2025-08-16</div>
+    <div class="version">v1.12f - 2025-08-16</div>
 
     <div class="tab-buttons">
       <div id="tabPeso" class="tab-button active" onclick="selectTab('peso')">Peso</div>
@@ -160,84 +158,40 @@
     });
 
     /* ============================
-       SCROLL “SNAPPY” SU INPUT FOCUS
+       SCROLL STABILE (tuning per device)
        ============================ */
-    // Profilo fisso “snappy” (~120ms)
-    function stableAfterKeyboard(cb) {
-      const vv = window.visualViewport;
-      if (!vv) { cb(); return; }
-      let lastH = vv.height, stable = 0, tries = 0;
-      const needed = 1;   // attesa minima
-      const maxTries = 10;
+    const UA = navigator.userAgent || navigator.vendor || '';
+    const isAndroid  = /Android/i.test(UA);
+    const isIOS      = /iPhone|iPad|iPod/i.test(UA);
+    const isSamsung  = /Samsung|SM-|SAMSUNG|One UI|SamsungBrowser/i.test(UA) && isAndroid;
 
-      const tick = () => {
-        tries++;
-        if (vv.height === lastH) stable++; else { stable = 0; lastH = vv.height; }
-        if (stable >= needed || tries > maxTries) cb();
-        else requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    }
+    const SCROLL_CFG = isSamsung
+      ? { delay: 260, offset: 16 }
+      : isIOS
+        ? { delay: 200, offset: 10 }
+        : { delay: 220, offset: 12 };
 
-    function animateScrollTo(y, duration = 120) {
-      const start = (document.scrollingElement?.scrollTop ?? window.pageYOffset);
-      const dist = y - start;
-      if (Math.abs(dist) < 2 || duration <= 0) {
-        (document.scrollingElement || document.documentElement || window).scrollTo(0, y);
-        return;
-      }
-      const startTime = performance.now();
-      const ease = t => t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; // easeInOutQuad
-      const step = (now) => {
-        const p = Math.min(1, (now - startTime)/duration);
-        const cur = Math.round(start + dist * ease(p));
-        (document.scrollingElement || document.documentElement || window).scrollTo(0, cur);
-        if (p < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    }
-
-    function bringInputHigh(el, extraOffset = 8) {
-      // “nudge” per Chrome/OneUI
-      window.scrollBy(0, 1); window.scrollBy(0, -1);
-
-      stableAfterKeyboard(() => {
-        const scroller = document.scrollingElement || document.documentElement || document.body;
-        const rect = el.getBoundingClientRect();
-
+    function bringInputHighOnce(el) {
+      setTimeout(() => {
         const vv = window.visualViewport;
         if (vv) {
           const occluded = Math.max(0, window.innerHeight - vv.height);
-          document.body.style.paddingBottom = (occluded ? occluded + 16 : 0) + "px";
+          document.body.style.paddingBottom = (occluded ? occluded + 12 : 0) + "px";
         }
-
-        const targetY = (window.scrollY || window.pageYOffset) + rect.top - extraOffset;
-        const y = Math.max(0, targetY);
-
-        // Animazione rapida “snappy”
-        animateScrollTo(y, 120);
-
-        // fallback: assicurati dell’allineamento
-        setTimeout(() => { el.scrollIntoView({ block: 'start' }); }, 60);
-      });
+        const rect = el.getBoundingClientRect();
+        const y = Math.max(0, (window.scrollY || window.pageYOffset) + rect.top - SCROLL_CFG.offset);
+        const scroller = document.scrollingElement || document.documentElement || document.body;
+        if (typeof scroller.scrollTo === 'function') scroller.scrollTo(0, y);
+        else window.scrollTo(0, y);
+      }, SCROLL_CFG.delay);
     }
 
-    // Collega handler
     ['alimentoInput','quantitaInput','peso','numeroPorzioni'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      el.addEventListener('focus', () => bringInputHigh(el));
+      el.addEventListener('focus', () => bringInputHighOnce(el));
       el.addEventListener('blur',  () => { document.body.style.paddingBottom = ''; });
     });
-
-    if (window.visualViewport) {
-      const reScrollIfFocused = () => {
-        const a = document.activeElement;
-        if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA')) bringInputHigh(a);
-      };
-      visualViewport.addEventListener('resize', reScrollIfFocused);
-      visualViewport.addEventListener('scroll', reScrollIfFocused);
-    }
     /* ========= FINE PATCH ========= */
   </script>
 </body>
