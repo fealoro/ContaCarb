@@ -34,7 +34,7 @@
 <body>
   <div class="container">
     <h2>Conta Carboidrati</h2>
-    <div class="version">v1.12c - 2025-08-16</div>
+    <div class="version">v1.12d - 2025-08-16</div>
 
     <div class="tab-buttons">
       <div id="tabPeso" class="tab-button active" onclick="selectTab('peso')">Peso</div>
@@ -160,32 +160,51 @@
     });
 
     /* ============================
-       SOLUZIONE 3 - SCROLL ROBUSTO
+       SCROLL “SNAPPY” SU INPUT FOCUS
        ============================ */
-    function stableAfterKeyboard(callback) {
+    // Profilo fisso “snappy” (~120ms)
+    function stableAfterKeyboard(cb) {
       const vv = window.visualViewport;
-      if (!vv) { callback(); return; }
+      if (!vv) { cb(); return; }
+      let lastH = vv.height, stable = 0, tries = 0;
+      const needed = 1;   // attesa minima
+      const maxTries = 10;
 
-      // Attendi che l'altezza smetta di cambiare (2 campioni uguali)
-      let lastH = vv.height, stableCount = 0, tries = 0;
       const tick = () => {
         tries++;
-        if (vv.height === lastH) stableCount++; else { stableCount = 0; lastH = vv.height; }
-        if (stableCount >= 2 || tries > 20) callback();
+        if (vv.height === lastH) stable++; else { stable = 0; lastH = vv.height; }
+        if (stable >= needed || tries > maxTries) cb();
         else requestAnimationFrame(tick);
       };
-      tick();
+      requestAnimationFrame(tick);
+    }
+
+    function animateScrollTo(y, duration = 120) {
+      const start = (document.scrollingElement?.scrollTop ?? window.pageYOffset);
+      const dist = y - start;
+      if (Math.abs(dist) < 2 || duration <= 0) {
+        (document.scrollingElement || document.documentElement || window).scrollTo(0, y);
+        return;
+      }
+      const startTime = performance.now();
+      const ease = t => t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; // easeInOutQuad
+      const step = (now) => {
+        const p = Math.min(1, (now - startTime)/duration);
+        const cur = Math.round(start + dist * ease(p));
+        (document.scrollingElement || document.documentElement || window).scrollTo(0, cur);
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
     }
 
     function bringInputHigh(el, extraOffset = 8) {
-      // piccola “spintarella” per forzare il ricalcolo su alcuni Samsung
+      // “nudge” per Chrome/OneUI
       window.scrollBy(0, 1); window.scrollBy(0, -1);
 
       stableAfterKeyboard(() => {
         const scroller = document.scrollingElement || document.documentElement || document.body;
         const rect = el.getBoundingClientRect();
 
-        // calcola spazio coperto dalla tastiera e aggiungi padding-bottom temporaneo
         const vv = window.visualViewport;
         if (vv) {
           const occluded = Math.max(0, window.innerHeight - vv.height);
@@ -195,18 +214,15 @@
         const targetY = (window.scrollY || window.pageYOffset) + rect.top - extraOffset;
         const y = Math.max(0, targetY);
 
-        // prova con scrollTo sullo scrollingElement corretto
-        if (typeof scroller.scrollTo === 'function') scroller.scrollTo({ top: y, behavior: 'smooth' });
-        else window.scrollTo(0, y);
+        // Animazione rapida “snappy”
+        animateScrollTo(y, 120);
 
-        // fallback aggiuntivo: assicurati che l'elemento sia allineato in alto
-        setTimeout(() => {
-          el.scrollIntoView({ block: 'start', behavior: 'smooth' });
-        }, 120);
+        // fallback: assicurati dell’allineamento
+        setTimeout(() => { el.scrollIntoView({ block: 'start' }); }, 60);
       });
     }
 
-    // Collega focus handler
+    // Collega handler
     ['alimentoInput','quantitaInput','peso','numeroPorzioni'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -214,7 +230,6 @@
       el.addEventListener('blur',  () => { document.body.style.paddingBottom = ''; });
     });
 
-    // riallinea se la viewport cambia mentre la tastiera sale
     if (window.visualViewport) {
       const reScrollIfFocused = () => {
         const a = document.activeElement;
@@ -223,7 +238,7 @@
       visualViewport.addEventListener('resize', reScrollIfFocused);
       visualViewport.addEventListener('scroll', reScrollIfFocused);
     }
-    /* ======= FINE SCROLL ROBUSTO ======= */
+    /* ========= FINE PATCH ========= */
   </script>
 </body>
 </html>
