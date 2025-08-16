@@ -3,32 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <title>Conta Carboidrati</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
   <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
   <style>
-    body {font-family: system-ui, sans-serif; margin: 0; padding: 20px; background-color: #f8f8f8; color: #333;}
-    h2 {text-align: center; margin-bottom: 10px;}
-    .version {text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px;}
-    .container {max-width: 500px; margin: auto; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);} 
-    .tab-buttons {display: flex; justify-content: space-between; margin-bottom: 20px;} 
-    .tab-button {flex: 1; text-align: center; padding: 12px; background-color: #e0e0e0; border: 1px solid #ccc; cursor: pointer; border-radius: 8px; margin-right: 6px; font-weight: bold;} 
-    .tab-button:last-child {margin-right: 0;} 
-    .tab-button.active {background-color: #007bff; color: white; border-color: #007bff;} 
-    label {font-weight: 600; margin-top: 12px; display: block;} 
-    input {width: 100%; padding: 10px; font-size: 1em; margin-top: 6px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;} 
-    .suggestions {border: 1px solid #ccc; border-top: none; max-height: 150px; overflow-y: auto; background: white; position: absolute; width: 100%; z-index: 999;} 
-    .suggestion {padding: 10px; cursor: pointer;} 
-    .suggestion:hover {background-color: #f0f0f0;} 
-    button {margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1em; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;} 
-    button:hover {background-color: #0056b3;} 
-    .result {margin-top: 24px; text-align: center; font-size: 1.6em; font-weight: bold; color: #28a745;} 
-    .form-section {display: none; position: relative;} 
+    :root { --gap: 24px; --radius: 16px; --shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    html, body { height: 100%; }
+    body {
+      font-family: system-ui, sans-serif; margin: 0; padding: 20px;
+      background-color: #f8f8f8; color: #333; min-height: 100dvh;
+    }
+    h2 { text-align: center; margin-bottom: 10px; }
+    .version { text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px; }
+    .container {
+      max-width: 500px; margin: auto; background: white; border-radius: var(--radius);
+      padding: var(--gap); box-shadow: var(--shadow);
+    }
+    .tab-buttons { display: flex; justify-content: space-between; margin-bottom: 20px; gap: 6px; }
+    .tab-button {
+      flex: 1; text-align: center; padding: 12px; background-color: #e0e0e0;
+      border: 1px solid #ccc; cursor: pointer; border-radius: 8px; font-weight: bold; user-select: none;
+    }
+    .tab-button.active { background-color: #007bff; color: white; border-color: #007bff; }
+    label { font-weight: 600; margin-top: 12px; display: block; }
+    input {
+      width: 100%; padding: 12px; font-size: 1em; margin-top: 6px;
+      border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;
+    }
+
+    /* === Modalità overlay (fallback) === */
+    .suggestions-overlay {
+      position: fixed; display: none; border: 1px solid #ccc; border-radius: 12px;
+      overflow-y: auto; background: white; box-shadow: var(--shadow); z-index: 9999;
+      max-height: 40vh;
+    }
+    .suggestion { padding: 12px; cursor: pointer; }
+    .suggestion + .suggestion { border-top: 1px solid #eee; }
+    .suggestion:hover { background-color: #f5f7fb; }
+
+    /* === Modalità “foglio” (bottom sheet) === */
+    .sheet {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 10000;
+      transform: translateY(100%); transition: transform 0.2s ease-out;
+      background: #fff; border-top-left-radius: 16px; border-top-right-radius: 16px;
+      box-shadow: 0 -6px 16px rgba(0,0,0,0.15);
+      max-height: 70dvh; display: flex; flex-direction: column;
+    }
+    .sheet.open { transform: translateY(0); }
+    .sheet-handle {
+      width: 44px; height: 5px; border-radius: 4px; background: #d0d0d0;
+      margin: 8px auto 10px auto;
+    }
+    .sheet-title { font-weight: 600; padding: 0 16px 8px 16px; }
+    .sheet-list { overflow-y: auto; border-top: 1px solid #eee; }
+    .sheet-item { padding: 14px 16px; cursor: pointer; }
+    .sheet-item + .sheet-item { border-top: 1px solid #f0f0f0; }
+    .sheet-item:active { background: #f5f7fb; }
+
+    button {
+      margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1em;
+      background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;
+    }
+    button:hover { background-color: #0056b3; }
+    .result { margin-top: 24px; text-align: center; font-size: 1.6em; font-weight: bold; color: #28a745; }
+    .form-section { display: none; position: relative; }
+    .safe-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="container safe-bottom">
     <h2>Conta Carboidrati</h2>
-    <div class="version">v1.12 - 2025-08-10</div>
+    <div class="version">v1.14 - 2025-08-16</div>
 
     <div class="tab-buttons">
       <div id="tabPeso" class="tab-button active" onclick="selectTab('peso')">Peso</div>
@@ -37,40 +81,53 @@
 
     <div id="formPeso" class="form-section" style="display: block;">
       <label for="alimentoInput">Scegli un alimento:</label>
-      <input id="alimentoInput" autocomplete="off" placeholder="Digita per cercare...">
-      <div id="suggerimentiPeso" class="suggestions"></div>
+      <input id="alimentoInput" autocomplete="off" placeholder="Digita per cercare..." enterkeyhint="done" inputmode="search">
+      <!-- overlay fallback -->
+      <div id="suggerimentiPeso" class="suggestions-overlay" role="listbox" aria-label="Suggerimenti peso"></div>
 
       <label for="peso">Inserisci il peso (in grammi):</label>
-      <input type="number" id="peso" placeholder="Es. 120">
+      <input type="number" id="peso" placeholder="Es. 120" inputmode="decimal" enterkeyhint="done">
     </div>
 
     <div id="formQuantita" class="form-section">
       <label for="quantitaInput">Scegli un alimento:</label>
-      <input id="quantitaInput" autocomplete="off" placeholder="Digita per cercare...">
-      <div id="suggerimentiQuantita" class="suggestions"></div>
+      <input id="quantitaInput" autocomplete="off" placeholder="Digita per cercare..." enterkeyhint="done" inputmode="search">
+      <!-- overlay fallback -->
+      <div id="suggerimentiQuantita" class="suggestions-overlay" role="listbox" aria-label="Suggerimenti quantità"></div>
 
       <label for="numeroPorzioni">Numero di unità:</label>
-      <input type="number" id="numeroPorzioni" placeholder="Es. 3">
+      <input type="number" id="numeroPorzioni" placeholder="Es. 3" inputmode="numeric" enterkeyhint="done">
     </div>
 
     <button onclick="calcola()">Calcola Carboidrati</button>
     <div class="result" id="output"></div>
   </div>
 
+  <!-- Bottom sheet riusabile per entrambe le tab -->
+  <div id="sheet" class="sheet" role="dialog" aria-modal="true" aria-label="Suggerimenti">
+    <div class="sheet-handle"></div>
+    <div id="sheetTitle" class="sheet-title"></div>
+    <div id="sheetList" class="sheet-list"></div>
+  </div>
+
   <script>
+    // === Config ===
+    const USE_SHEET = true; // <--- metti a false per usare l'overlay come v1.13
+
     let alimenti = [], quantita = [];
     let fuseAlimenti, fuseQuantita;
 
+    // Caricamento dati
     fetch('alimenti.json').then(r => r.json()).then(data => {
       alimenti = data;
       fuseAlimenti = new Fuse(data, { keys: ['nome'], threshold: 0.3 });
     });
-
     fetch('quantita.json').then(r => r.json()).then(data => {
       quantita = data;
       fuseQuantita = new Fuse(data, { keys: ['nome'], threshold: 0.3 });
     });
 
+    // Gestione tab
     function selectTab(tipo) {
       document.getElementById("tabPeso").classList.remove("active");
       document.getElementById("tabQuantita").classList.remove("active");
@@ -85,73 +142,202 @@
         document.getElementById("formQuantita").style.display = "block";
       }
 
-      document.getElementById("alimentoInput").value = "";
-      document.getElementById("peso").value = "";
-      document.getElementById("quantitaInput").value = "";
-      document.getElementById("numeroPorzioni").value = "";
+      // Pulisci campi e UI
+      ["alimentoInput","peso","quantitaInput","numeroPorzioni"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
       document.getElementById("output").innerText = "";
-      clearSuggestions("suggerimentiPeso");
-      clearSuggestions("suggerimentiQuantita");
+      hideAllSuggestions();
     }
 
-    function showSuggestions(fuse, query, containerId, inputId, isPeso) {
-      const results = fuse.search(query).slice(0, 5);
-      const container = document.getElementById(containerId);
-      clearSuggestions(containerId);
-      results.forEach(r => {
-        const div = document.createElement("div");
-        div.className = "suggestion";
-        div.textContent = r.item.nome;
-        div.onclick = () => {
-          document.getElementById(inputId).value = r.item.nome;
-          clearSuggestions(containerId);
-          if (isPeso) {
-            document.getElementById("peso").value = 100;
-          } else {
-            document.getElementById("numeroPorzioni").value = 1;
-          }
-          calcola();
-        };
-        container.appendChild(div);
+    // --- Overlay (fallback) ---
+    function positionOverlay(containerId, inputEl) {
+      const cont = document.getElementById(containerId);
+      if (!cont || !inputEl) return;
+      const rect = inputEl.getBoundingClientRect();
+      const vv = window.visualViewport;
+      const viewportHeight = vv ? vv.height : window.innerHeight;
+
+      cont.style.display = "block";
+      cont.style.top = Math.round(rect.bottom + 4) + "px";
+      cont.style.left = Math.round(rect.left) + "px";
+      cont.style.width = Math.round(rect.width) + "px";
+
+      const gap = 8;
+      const maxH = Math.max(120, viewportHeight - rect.bottom - gap);
+      cont.style.maxHeight = Math.round(maxH) + "px";
+    }
+
+    // --- Bottom Sheet ---
+    const sheet = document.getElementById('sheet');
+    const sheetTitle = document.getElementById('sheetTitle');
+    const sheetList = document.getElementById('sheetList');
+    let currentSheetContext = null; // { inputId, isPeso }
+
+    function openSheet(title) {
+      sheetTitle.textContent = title || 'Suggerimenti';
+      sheet.classList.add('open');
+    }
+    function closeSheet() {
+      sheet.classList.remove('open');
+      sheetList.innerHTML = '';
+      currentSheetContext = null;
+    }
+
+    // Chiudi sheet al tap fuori (sopra il bordo superiore) o con ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeSheet();
+    });
+
+    // Gestione click "fuori": se clic all'esterno del sheet mentre è aperto
+    document.addEventListener('click', (e) => {
+      if (!sheet.classList.contains('open')) return;
+      const path = e.composedPath ? e.composedPath() : [];
+      if (!path.includes(sheet)) closeSheet();
+    }, { passive: true });
+
+    function renderSuggestions(list, onPick) {
+      sheetList.innerHTML = '';
+      list.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'sheet-item';
+        div.textContent = item.nome;
+        div.onclick = () => onPick(item);
+        sheetList.appendChild(div);
       });
     }
 
-    function clearSuggestions(id) { document.getElementById(id).innerHTML = ""; }
+    function showSuggestions(fuse, query, overlayId, inputId, isPeso) {
+      // Nessuna ricerca => chiudi tutto
+      if (!fuse || !query) { hideAllSuggestions(); return; }
+
+      const results = fuse.search(query).slice(0, 12).map(r => r.item);
+      if (results.length === 0) { hideAllSuggestions(); return; }
+
+      if (USE_SHEET) {
+        const title = isPeso ? 'Scegli alimento (per peso)' : 'Scegli alimento (per quantità)';
+        currentSheetContext = { inputId, isPeso };
+        renderSuggestions(results, (item) => {
+          const inputEl = document.getElementById(inputId);
+          inputEl.value = item.nome;
+          // Valori di default + calcolo
+          if (isPeso) document.getElementById("peso").value = 100;
+          else document.getElementById("numeroPorzioni").value = 1;
+          closeSheet();
+          calcola();
+          // focus sul campo successivo per editing rapido
+          if (isPeso) document.getElementById("peso")?.focus();
+          else document.getElementById("numeroPorzioni")?.focus();
+        });
+        openSheet(title);
+      } else {
+        // Overlay come in v1.13
+        const container = document.getElementById(overlayId);
+        container.innerHTML = '';
+        const inputEl = document.getElementById(inputId);
+        positionOverlay(overlayId, inputEl);
+        results.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'suggestion';
+          div.textContent = item.nome;
+          div.onclick = () => {
+            inputEl.value = item.nome;
+            if (isPeso) document.getElementById("peso").value = 100;
+            else document.getElementById("numeroPorzioni").value = 1;
+            container.style.display = 'none';
+            calcola();
+            if (isPeso) document.getElementById("peso")?.focus();
+            else document.getElementById("numeroPorzioni")?.focus();
+          };
+          container.appendChild(div);
+        });
+      }
+    }
+
+    function hideAllSuggestions() {
+      // Overlay
+      ['suggerimentiPeso','suggerimentiQuantita'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.style.display = 'none'; el.innerHTML = ''; }
+      });
+      // Sheet
+      closeSheet();
+    }
 
     function calcola() {
       const isPeso = document.getElementById("formPeso").style.display === "block";
       const nome = isPeso ? document.getElementById("alimentoInput").value : document.getElementById("quantitaInput").value;
       const inputVal = isPeso ? parseFloat(document.getElementById("peso").value) : parseFloat(document.getElementById("numeroPorzioni").value);
-      const dataset = isPeso ? fuseAlimenti.search(nome) : fuseQuantita.search(nome);
+      const dataset = isPeso ? (fuseAlimenti ? fuseAlimenti.search(nome) : []) : (fuseQuantita ? fuseQuantita.search(nome) : []);
       const alimento = dataset.length > 0 ? dataset[0].item : null;
 
       if (alimento && !isNaN(inputVal)) {
         const carbo = isPeso ? Math.round(alimento.carbo * inputVal / 100) : Math.round(alimento.carbo * inputVal);
-        document.getElementById("output").innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + carbo + " g</span>";
+        document.getElementById("output").innerHTML =
+          "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + carbo + " g</span>";
       } else {
         document.getElementById("output").innerText = "Inserisci valori validi.";
       }
     }
 
-    document.getElementById("alimentoInput").addEventListener("input", e => {
-      showSuggestions(fuseAlimenti, e.target.value, "suggerimentiPeso", "alimentoInput", true);
-    });
-    document.getElementById("quantitaInput").addEventListener("input", e => {
-      showSuggestions(fuseQuantita, e.target.value, "suggerimentiQuantita", "quantitaInput", false);
+    // --- Miglioramenti mobile ---
+    // Scroll al centro quando un input va in focus (evita copertura tastiera)
+    document.querySelectorAll("input").forEach(el => {
+      el.addEventListener("focus", () => {
+        setTimeout(() => { el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 150);
+      });
+      // Chiudi suggerimenti quando perdi il focus (piccolo delay per consentire il tap)
+      el.addEventListener("blur", () => {
+        setTimeout(() => { hideAllSuggestions(); }, 150);
+      });
     });
 
+    // Se non usi il sheet, riposiziona overlay quando cambia la viewport visibile (tastiera su/giù)
+    const vv = window.visualViewport;
+    if (vv && !USE_SHEET) {
+      vv.addEventListener("resize", () => {
+        const a = document.activeElement;
+        if (a?.id === "alimentoInput") positionOverlay("suggerimentiPeso", a);
+        if (a?.id === "quantitaInput") positionOverlay("suggerimentiQuantita", a);
+      });
+      vv.addEventListener("scroll", () => {
+        const a = document.activeElement;
+        if (a?.id === "alimentoInput") positionOverlay("suggerimentiPeso", a);
+        if (a?.id === "quantitaInput") positionOverlay("suggerimentiQuantita", a);
+      });
+    }
+
+    // Comportamento già presente: svuota valori quando entri nei campi numerici
     document.getElementById("peso").addEventListener("focus", () => { document.getElementById("peso").value = ""; });
     document.getElementById("numeroPorzioni").addEventListener("focus", () => { document.getElementById("numeroPorzioni").value = ""; });
 
     // Invio con Enter
     document.querySelectorAll('#peso, #numeroPorzioni, #alimentoInput, #quantitaInput').forEach(el => {
       el.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          calcola();
-        }
+        if (e.key === 'Enter') { e.preventDefault(); calcola(); }
       });
     });
+
+    // Eventi input per mostrare suggerimenti
+    const alimentoInput = document.getElementById("alimentoInput");
+    const quantitaInput = document.getElementById("quantitaInput");
+
+    alimentoInput.addEventListener("input", e => {
+      showSuggestions(fuseAlimenti, e.target.value, "suggerimentiPeso", "alimentoInput", true);
+    });
+    quantitaInput.addEventListener("input", e => {
+      showSuggestions(fuseQuantita, e.target.value, "suggerimentiQuantita", "quantitaInput", false);
+    });
+
+    // Chiudi tutto al tap fuori dagli input/suggerimenti (utile in overlay)
+    document.addEventListener("click", (e) => {
+      const t = e.target;
+      if (!t.closest || (!t.closest("#alimentoInput") && !t.closest("#quantitaInput")
+          && !t.closest("#suggerimentiPeso") && !t.closest("#suggerimentiQuantita") && !t.closest("#sheet"))) {
+        hideAllSuggestions();
+      }
+    }, { passive: true });
   </script>
 </body>
 </html>
