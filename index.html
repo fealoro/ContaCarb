@@ -28,7 +28,7 @@
 <body>
   <div class="container">
     <h2>Conta Carboidrati</h2>
-    <div class="version">v1.12 - 2025-08-10</div>
+    <div class="version">v1.12b - 2025-08-16</div>
 
     <div class="tab-buttons">
       <div id="tabPeso" class="tab-button active" onclick="selectTab('peso')">Peso</div>
@@ -152,6 +152,35 @@
         }
       });
     });
+
+    /* =======================
+       SOLUZIONE 3 - SCROLL AUTO
+       ======================= */
+    function bringInputHigh(el, extraOffset = 8) {
+      // Attendi che la tastiera compaia, poi scrolla l'elemento verso l'alto
+      setTimeout(() => {
+        const rect = el.getBoundingClientRect();
+        const targetY = window.scrollY + rect.top - extraOffset;
+        const y = Math.max(0, targetY);
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }, 180);
+    }
+
+    ['alimentoInput','quantitaInput','peso','numeroPorzioni'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('focus', () => bringInputHigh(el));
+    });
+
+    if (window.visualViewport) {
+      const reScrollIfFocused = () => {
+        const a = document.activeElement;
+        if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA')) bringInputHigh(a);
+      };
+      visualViewport.addEventListener('resize', reScrollIfFocused);
+      visualViewport.addEventListener('scroll', reScrollIfFocused);
+    }
+    /* ======= FINE SOLUZIONE 3 ======= */
   </script>
 </body>
 </html>
