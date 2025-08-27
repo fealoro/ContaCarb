@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Conta Carboidrati</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+  <style>
+    body {font-family: system-ui, sans-serif; margin: 0; padding: 20px; background-color: #f8f8f8; color: #333;}
+    h2 {text-align: center; margin-bottom: 10px;}
+    .version {text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px;}
+    .container {max-width: 500px; margin: auto; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);} 
+    .tab-buttons {display: flex; justify-content: space-between; margin-bottom: 20px;} 
+    .tab-button {flex: 1; text-align: center; padding: 12px; background-color: #e0e0e0; border: 1px solid #ccc; cursor: pointer; border-radius: 8px; margin-right: 6px; font-weight: bold;} 
+    .tab-button:last-child {margin-right: 0;} 
+    .tab-button.active {background-color: #007bff; color: white; border-color: #007bff;} 
+    label {font-weight: 600; margin-top: 12px; display: block;} 
+    input {width: 100%; padding: 10px; font-size: 1em; margin-top: 6px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;} 
+    .suggestions {border: 1px solid #ccc; border-top: none; max-height: 150px; overflow-y: auto; background: white; position: absolute; width: 100%; z-index: 999;} 
+    .suggestion {padding: 10px; cursor: pointer;} 
+    .suggestion:hover {background-color: #f0f0f0;} 
+    button {margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1em; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;} 
+    button:hover {background-color: #0056b3;} 
+    .result {margin-top: 24px; text-align: center; font-size: 1.6em; font-weight: bold; color: #28a745;} 
+    .cg-dot { display:inline-block; width: 0.8em; height: 0.8em; margin-left: 12px; border-radius: 50%; vertical-align: middle; box-shadow: 0 0 0 1px rgba(0,0,0,0.15) inset; }
+    .cg-dot.low  { background: #28a745; }
+    .cg-dot.med  { background: #e0a800; }
+    .cg-dot.high { background: #dc3545; }
+    .form-section {display: none; position: relative;} 
+
+    html, body { min-height: 120dvh; }
+    #alimentoInput, #quantitaInput, #peso, #numeroPorzioni { scroll-margin-top: 12vh; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Conta Carboidrati</h2>
+    <div class="version">v1.15.3 (GL-IG cachebust) - 2025-08-27</div>
+
+    <div class="tab-buttons">
+      <div id="tabPeso" class="tab-button active" onclick="selectTab('peso')">Peso</div>
+      <div id="tabQuantita" class="tab-button" onclick="selectTab('quantita')">Quantità</div>
+    </div>
+
+    <div id="formPeso" class="form-section" style="display: block;">
+      <label for="alimentoInput">Scegli un alimento:</label>
+      <input id="alimentoInput" autocomplete="off" placeholder="Digita per cercare...">
+      <div id="suggerimentiPeso" class="suggestions"></div>
+
+      <label for="peso">Inserisci il peso (in grammi):</label>
+      <input type="number" id="peso" placeholder="Es. 120">
+    </div>
+
+    <div id="formQuantita" class="form-section">
+      <label for="quantitaInput">Scegli un alimento:</label>
+      <input id="quantitaInput" autocomplete="off" placeholder="Digita per cercare...">
+      <div id="suggerimentiQuantita" class="suggestions"></div>
+
+      <label for="numeroPorzioni">Numero di unità:</label>
+      <input type="number" id="numeroPorzioni" placeholder="Es. 3">
+    </div>
+
+    <button onclick="calcola()">Calcola Carboidrati</button>
+    <div class="result" id="output"></div>
+  </div>
+
+  <script>
+    let alimenti = [], quantita = [];
+    let fuseAlimenti, fuseQuantita;
+
+    // Carica i dataset (GitHub Pages) con cache bust
+    const VERSION = '1.15.3';
+    async function loadDatasets() {
+      try {
+        const ts = Date.now();
+        const [aRes, qRes] = await Promise.all([
+          fetch(`alimenti_ig.json?v=${VERSION}&ts=${ts}`, { cache: 'no-store' }),
+          fetch(`quantita_ig.json?v=${VERSION}&ts=${ts}`, { cache: 'no-store' })
+        ]);
+        if (!aRes.ok) throw new Error('alimenti_ig.json: HTTP ' + aRes.status);
+        if (!qRes.ok) throw new Error('quantita_ig.json: HTTP ' + qRes.status);
+        alimenti = await aRes.json();
+        quantita = await qRes.json();
+        fuseAlimenti = new Fuse(alimenti, { keys: ['nome'], threshold: 0.3 });
+        fuseQuantita = new Fuse(quantita, { keys: ['nome'], threshold: 0.3 });
+        console.log('[ContaCarbo] DB caricati', { alimenti: alimenti.length, quantita: quantita.length });
+      } catch (e) {
+        console.error('Errore nel caricamento dei database', e);
+      }
+    }
+    loadDatasets();
+
+    function selectTab(tipo) {
+      document.getElementById('tabPeso').classList.remove('active');
+      document.getElementById('tabQuantita').classList.remove('active');
+
+      if (tipo === 'peso') {
+        document.getElementById('tabPeso').classList.add('active');
+        document.getElementById('formPeso').style.display = 'block';
+        document.getElementById('formQuantita').style.display = 'none';
+      } else {
+        document.getElementById('tabQuantita').classList.add('active');
+        document.getElementById('formPeso').style.display = 'none';
+        document.getElementById('formQuantita').style.display = 'block';
+      }
+
+      document.getElementById('alimentoInput').value = '';
+      document.getElementById('peso').value = '';
+      document.getElementById('quantitaInput').value = '';
+      document.getElementById('numeroPorzioni').value = '';
+      document.getElementById('output').innerText = '';
+      clearSuggestions('suggerimentiPeso');
+      clearSuggestions('suggerimentiQuantita');
+    }
+
+    function showSuggestions(fuse, query, containerId, inputId, isPeso) {
+      const container = document.getElementById(containerId);
+      clearSuggestions(containerId);
+      if (!fuse) return; // dataset non ancora pronto
+
+      const results = fuse.search(query || '').slice(0, 5);
+      results.forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'suggestion';
+        div.textContent = r.item.nome;
+        div.onclick = () => {
+          document.getElementById(inputId).value = r.item.nome;
+          clearSuggestions(containerId);
+          if (isPeso) {
+            document.getElementById('peso').value = 100;
+          } else {
+            document.getElementById('numeroPorzioni').value = 1;
+          }
+          calcola();
+        };
+        container.appendChild(div);
+      });
+    }
+
+    function clearSuggestions(id) { document.getElementById(id).innerHTML = ''; }
+
+    function calcola() {
+      const isPeso = document.getElementById('formPeso').style.display === 'block';
+      const nome = isPeso ? document.getElementById('alimentoInput').value : document.getElementById('quantitaInput').value;
+      const inputVal = isPeso ? parseFloat(document.getElementById('peso').value) : parseFloat(document.getElementById('numeroPorzioni').value);
+
+      const fuse = isPeso ? fuseAlimenti : fuseQuantita;
+      const results = fuse ? fuse.search(nome) : [];
+      const alimento = results.length > 0 ? results[0].item : null;
+
+      if (alimento && !isNaN(inputVal)) {
+        const carbo = isPeso ? Math.round(alimento.carbo * inputVal / 100) : Math.round(alimento.carbo * inputVal);
+        let glFrag = '';
+        const ig = Number(alimento.IG_stimato);
+        if (!Number.isNaN(ig)) {
+          const gl = Math.round((carbo * ig) / 100);
+          const levelClass = (gl <= 10) ? 'low' : (gl <= 19 ? 'med' : 'high');
+          const title = `CG stimato: ${gl} – basso ≤10, medio 11–19, alto ≥20`;
+          glFrag = ` <span class="cg-dot ${levelClass}" title="${title}" aria-label="${title}"></span>`;
+        }
+        document.getElementById('output').innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + carbo + " g</span>" + glFrag;
+      } else {
+        document.getElementById('output').innerText = 'Inserisci valori validi.';
+      }
+    }
+
+    document.getElementById('alimentoInput').addEventListener('input', e => {
+      showSuggestions(fuseAlimenti, e.target.value, 'suggerimentiPeso', 'alimentoInput', true);
+    });
+    document.getElementById('quantitaInput').addEventListener('input', e => {
+      showSuggestions(fuseQuantita, e.target.value, 'suggerimentiQuantita', 'quantitaInput', false);
+    });
+
+    document.getElementById('peso').addEventListener('focus', () => { document.getElementById('peso').value = ''; });
+    document.getElementById('numeroPorzioni').addEventListener('focus', () => { document.getElementById('numeroPorzioni').value = ''; });
+
+    // Invio con Enter
+    document.querySelectorAll('#peso, #numeroPorzioni, #alimentoInput, #quantitaInput').forEach(el => {
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          calcola();
+        }
+      });
+    });
+
+    /* ============================
+       SOLUZIONE 3 - SCROLL ROBUSTO
+       ============================ */
+    function stableAfterKeyboard(callback) {
+      const vv = window.visualViewport;
+      if (!vv) { callback(); return; }
+
+      let lastH = vv.height, stableCount = 0, tries = 0;
+      const tick = () => {
+        tries++;
+        if (vv.height === lastH) stableCount++; else { stableCount = 0; lastH = vv.height; }
+        if (stableCount >= 2 || tries > 20) callback();
+        else requestAnimationFrame(tick);
+      };
+      tick();
+    }
+
+    function bringInputHigh(el, extraOffset = 8) {
+      window.scrollBy(0, 1); window.scrollBy(0, -1);
+
+      stableAfterKeyboard(() => {
+        const scroller = document.scrollingElement || document.documentElement || document.body;
+        const rect = el.getBoundingClientRect();
+
+        const vv = window.visualViewport;
+        if (vv) {
+          const occluded = Math.max(0, window.innerHeight - vv.height);
+          document.body.style.paddingBottom = (occluded ? occluded + 16 : 0) + 'px';
+        }
+
+        const targetY = (window.scrollY || window.pageYOffset) + rect.top - extraOffset;
+        const y = Math.max(0, targetY);
+
+        if (typeof scroller.scrollTo === 'function') scroller.scrollTo({ top: y, behavior: 'smooth' });
+        else window.scrollTo(0, y);
+
+        setTimeout(() => { el.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 120);
+      });
+    }
+
+    ['alimentoInput','quantitaInput','peso','numeroPorzioni'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('focus', () => bringInputHigh(el));
+      el.addEventListener('blur',  () => { document.body.style.paddingBottom = ''; });
+    });
+
+    if (window.visualViewport) {
+      const reScrollIfFocused = () => {
+        const a = document.activeElement;
+        if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA')) bringInputHigh(a);
+      };
+      visualViewport.addEventListener('resize', reScrollIfFocused);
+      visualViewport.addEventListener('scroll', reScrollIfFocused);
+    }
+  </script>
+</body>
+</html>
