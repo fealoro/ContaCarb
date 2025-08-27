@@ -35,7 +35,7 @@
 <body>
   <div class="container">
     <h2>Conta Carboidrati</h2>
-    <div class="version">v1.15 (GL-IG cachebust) - 2025-08-27</div>
+    <div class="version">v1.15.1 (GL-IG cachebust) - 2025-08-27</div>
 
     <div class="tab-buttons">
       <div id="tabPeso" class="tab-button active" onclick="selectTab('peso')">Peso</div>
@@ -72,8 +72,8 @@
     async function loadDatasets() {
       try {
         const [aRes, qRes] = await Promise.all([
-          fetch('alimenti_ig.json?v=1.15', { cache: 'no-store' }),
-          fetch('quantita_ig.json?v=1.15', { cache: 'no-store' })
+          fetch('alimenti_ig.json?v=1.15.1', { cache: 'no-store' }),
+          fetch('quantita_ig.json?v=1.15.1', { cache: 'no-store' })
         ]);
         if (!aRes.ok) throw new Error('alimenti_ig.json: HTTP ' + aRes.status);
         if (!qRes.ok) throw new Error('quantita_ig.json: HTTP ' + qRes.status);
@@ -153,8 +153,8 @@
         if (!Number.isNaN(ig)) {
           const gl = Math.round((carbo * ig) / 100);
           const levelClass = (gl <= 10) ? 'low' : (gl <= 19 ? 'med' : 'high');
-          const title = 'CG: basso ≤10, medio 11–19, alto ≥20. Formula: carbo (g) × IG_stimato / 100';
-          glFrag = ` <span class="gl ${levelClass}" title="${title}">(CG: ${gl})</span>`;
+          const title = 'Carico glicemico: basso ≤10, medio 11–19, alto ≥20';
+          glFrag = ` <span class="gl ${levelClass}" title="${title}">(${gl})</span>`;
         }
         document.getElementById('output').innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + carbo + " g</span>" + glFrag;
       } else {
@@ -232,11 +232,4 @@
     if (window.visualViewport) {
       const reScrollIfFocused = () => {
         const a = document.activeElement;
-        if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA')) bringInputHigh(a);
-      };
-      visualViewport.addEventListener('resize', reScrollIfFocused);
-      visualViewport.addEventListener('scroll', reScrollIfFocused);
-    }
-  </script>
-</body>
-</html>
+        if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXT
