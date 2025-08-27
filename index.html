@@ -22,7 +22,10 @@
     button {margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1em; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;} 
     button:hover {background-color: #0056b3;} 
     .result {margin-top: 24px; text-align: center; font-size: 1.6em; font-weight: bold; color: #28a745;} 
-    .gl {font-size: 0.6em; color: #555; margin-left: 8px; vertical-align: baseline;}
+    .gl { font-size: 0.85em; margin-left: 12px; vertical-align: baseline; font-weight: 600; }
+    .gl.low { color: #28a745; }
+    .gl.med { color: #e0a800; }
+    .gl.high { color: #dc3545; }
     .form-section {display: none; position: relative;} 
 
     html, body { min-height: 120dvh; }
@@ -148,9 +151,11 @@
         const ig = Number(alimento.IG_stimato);
         if (!Number.isNaN(ig)) {
           const gl = Math.round((carbo * ig) / 100);
-          glFrag = ` <span class="gl" title="Carico glicemico = carbo (g) × IG_stimato / 100">(CG: ${gl})</span>`;
+          const levelClass = (gl <= 10) ? 'low' : (gl <= 19 ? 'med' : 'high');
+          const title = 'CG: basso ≤10, medio 11–19, alto ≥20. Formula: carbo (g) × IG_stimato / 100';
+          glFrag = ` <span class="gl ${levelClass}" title="${title}">(CG: ${gl})</span>`;
         }
-        document.getElementById('output').innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + carbo + " g</span>" + glFrag;
+        document.getElementById('output').innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + carbo + " g</span>" + glFrag; color: #dc3545'>" + carbo + " g</span>" + glFrag;
       } else {
         document.getElementById('output').innerText = 'Inserisci valori validi.';
       }
