@@ -25,7 +25,6 @@
     .gl {font-size: 0.6em; color: #555; margin-left: 8px; vertical-align: baseline;}
     .form-section {display: none; position: relative;} 
 
-    /* --- patch per scroll su mobile (soluzione 3) --- */
     html, body { min-height: 120dvh; }
     #alimentoInput, #quantitaInput, #peso, #numeroPorzioni { scroll-margin-top: 12vh; }
   </style>
@@ -33,7 +32,7 @@
 <body>
   <div class="container">
     <h2>Conta Carboidrati</h2>
-    <div class="version">v1.13.1 (GL-IG) - 2025-08-27</div>
+    <div class="version">v1.14 (GL-IG) - 2025-08-27</div>
 
     <div class="tab-buttons">
       <div id="tabPeso" class="tab-button active" onclick="selectTab('peso')">Peso</div>
@@ -66,106 +65,65 @@
     let alimenti = [], quantita = [];
     let fuseAlimenti, fuseQuantita;
 
-    // Helper robusto per caricare JSON: prova con ".json" poi senza, gestisce errori
-    async function loadDataset(candidates) {
-      if (typeof candidates === 'string') candidates = [`${candidates}.json`, candidates];
-      let lastErr;
-      for (const url of candidates) {
-        try {
-          const res = await fetch(url, { cache: 'no-store' });
-          if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-          return await res.json();
-        } catch (e) { lastErr = e; }
-      }
-      throw lastErr || new Error('Impossibile caricare dataset');
-    }.json`, baseName];
-      let lastErr;
-      for (const url of candidates) {
-        try {
-          const res = await fetch(url, { cache: 'no-store' });
-          if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-          return await res.json();
-        } catch (e) { lastErr = e; }
-      }
-      throw lastErr || new Error('Impossibile caricare ' + baseName);
-    }
-
-    (async () => {
+    // Carica i dataset (GitHub Pages): stessi path della pagina
+    async function loadDatasets() {
       try {
-        const [a, q] = await Promise.all([
-          loadDataset(['alimenti_ig.json']),
-          loadDataset(['quantita_ig.json','QuantitaIG.json','QuantitaIG'])
+        const [aRes, qRes] = await Promise.all([
+          fetch('alimenti_ig.json', { cache: 'no-store' }),
+          fetch('quantita_ig.json', { cache: 'no-store' })
         ]);
-        alimenti = Array.isArray(a) ? a : (a.data || []);
-        quantita = Array.isArray(q) ? q : (q.data || []);
+        if (!aRes.ok) throw new Error('alimenti_ig.json: HTTP ' + aRes.status);
+        if (!qRes.ok) throw new Error('quantita_ig.json: HTTP ' + qRes.status);
+        alimenti = await aRes.json();
+        quantita = await qRes.json();
         fuseAlimenti = new Fuse(alimenti, { keys: ['nome'], threshold: 0.3 });
         fuseQuantita = new Fuse(quantita, { keys: ['nome'], threshold: 0.3 });
-        const out = document.getElementById('output');
-        if (out && !out.textContent) {
-          out.innerText = `Database caricati (Peso: ${alimenti.length}, Quantità: ${quantita.length}).`;
-          setTimeout(() => { out.innerText = ''; }, 1200);
-        }
       } catch (e) {
-        const msg = 'Errore nel caricamento dei database: ' + (e && e.message ? e.message : e);
-        console.error(msg);
-        const out = document.getElementById('output');
-        if (out) out.innerText = msg + '
-Verifica i nomi dei file e l\'estensione (.json).';
+        console.error('Errore nel caricamento dei database', e);
       }
-    })();
-
-    // Carica i dataset. Se presenti, gli oggetti possono avere: { nome, carbo, ig }
-    });
-
-    });
+    }
+    loadDatasets();
 
     function selectTab(tipo) {
-      document.getElementById("tabPeso").classList.remove("active");
-      document.getElementById("tabQuantita").classList.remove("active");
+      document.getElementById('tabPeso').classList.remove('active');
+      document.getElementById('tabQuantita').classList.remove('active');
 
-      if (tipo === "peso") {
-        document.getElementById("tabPeso").classList.add("active");
-        document.getElementById("formPeso").style.display = "block";
-        document.getElementById("formQuantita").style.display = "none";
+      if (tipo === 'peso') {
+        document.getElementById('tabPeso').classList.add('active');
+        document.getElementById('formPeso').style.display = 'block';
+        document.getElementById('formQuantita').style.display = 'none';
       } else {
-        document.getElementById("tabQuantita").classList.add("active");
-        document.getElementById("formPeso").style.display = "none";
-        document.getElementById("formQuantita").style.display = "block";
+        document.getElementById('tabQuantita').classList.add('active');
+        document.getElementById('formPeso').style.display = 'none';
+        document.getElementById('formQuantita').style.display = 'block';
       }
 
-      document.getElementById("alimentoInput").value = "";
-      document.getElementById("peso").value = "";
-      document.getElementById("quantitaInput").value = "";
-      document.getElementById("numeroPorzioni").value = "";
-      document.getElementById("output").innerText = "";
-      clearSuggestions("suggerimentiPeso");
-      clearSuggestions("suggerimentiQuantita");
+      document.getElementById('alimentoInput').value = '';
+      document.getElementById('peso').value = '';
+      document.getElementById('quantitaInput').value = '';
+      document.getElementById('numeroPorzioni').value = '';
+      document.getElementById('output').innerText = '';
+      clearSuggestions('suggerimentiPeso');
+      clearSuggestions('suggerimentiQuantita');
     }
 
     function showSuggestions(fuse, query, containerId, inputId, isPeso) {
       const container = document.getElementById(containerId);
       clearSuggestions(containerId);
-      if (!fuse) {
+      if (!fuse) return; // dataset non ancora pronto
+
+      const results = fuse.search(query || '').slice(0, 5);
+      results.forEach(r => {
         const div = document.createElement('div');
         div.className = 'suggestion';
-        div.textContent = 'Database non caricato…';
-        container.appendChild(div);
-        return;
-      }
-      const results = fuse.search(query || '').slice(0, 5);
-      const container = document.getElementById(containerId);
-      clearSuggestions(containerId);
-      results.forEach(r => {
-        const div = document.createElement("div");
-        div.className = "suggestion";
         div.textContent = r.item.nome;
         div.onclick = () => {
           document.getElementById(inputId).value = r.item.nome;
           clearSuggestions(containerId);
           if (isPeso) {
-            document.getElementById("peso").value = 100;
+            document.getElementById('peso').value = 100;
           } else {
-            document.getElementById("numeroPorzioni").value = 1;
+            document.getElementById('numeroPorzioni').value = 1;
           }
           calcola();
         };
@@ -173,40 +131,40 @@ Verifica i nomi dei file e l\'estensione (.json).';
       });
     }
 
-    function clearSuggestions(id) { document.getElementById(id).innerHTML = ""; }
+    function clearSuggestions(id) { document.getElementById(id).innerHTML = ''; }
 
     function calcola() {
-      const isPeso = document.getElementById("formPeso").style.display === "block";
-      const nome = isPeso ? document.getElementById("alimentoInput").value : document.getElementById("quantitaInput").value;
-      const inputVal = isPeso ? parseFloat(document.getElementById("peso").value) : parseFloat(document.getElementById("numeroPorzioni").value);
-      const dataset = (isPeso ? fuseAlimenti : fuseQuantita) ? (isPeso ? fuseAlimenti.search(nome) : fuseQuantita.search(nome)) : [];
-      const alimento = dataset.length > 0 ? dataset[0].item : null;
+      const isPeso = document.getElementById('formPeso').style.display === 'block';
+      const nome = isPeso ? document.getElementById('alimentoInput').value : document.getElementById('quantitaInput').value;
+      const inputVal = isPeso ? parseFloat(document.getElementById('peso').value) : parseFloat(document.getElementById('numeroPorzioni').value);
+
+      const fuse = isPeso ? fuseAlimenti : fuseQuantita;
+      const results = fuse ? fuse.search(nome) : [];
+      const alimento = results.length > 0 ? results[0].item : null;
 
       if (alimento && !isNaN(inputVal)) {
-        // carboidrati (g) arrotondati
         const carbo = isPeso ? Math.round(alimento.carbo * inputVal / 100) : Math.round(alimento.carbo * inputVal);
-        // carico glicemico = (carbo in grammi * IG) / 100, se IG presente
         let glFrag = '';
-        const ig = Number(alimento.IG_stimato ?? alimento.ig ?? alimento.IG);
+        const ig = Number(alimento.IG_stimato);
         if (!Number.isNaN(ig)) {
           const gl = Math.round((carbo * ig) / 100);
           glFrag = ` <span class="gl" title="Carico glicemico = carbo (g) × IG_stimato / 100">(CG: ${gl})</span>`;
         }
-        document.getElementById("output").innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + carbo + " g</span>" + glFrag;
+        document.getElementById('output').innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + carbo + " g</span>" + glFrag;
       } else {
-        document.getElementById("output").innerText = "Inserisci valori validi.";
+        document.getElementById('output').innerText = 'Inserisci valori validi.';
       }
     }
 
-    document.getElementById("alimentoInput").addEventListener("input", e => {
-      showSuggestions(fuseAlimenti, e.target.value, "suggerimentiPeso", "alimentoInput", true);
+    document.getElementById('alimentoInput').addEventListener('input', e => {
+      showSuggestions(fuseAlimenti, e.target.value, 'suggerimentiPeso', 'alimentoInput', true);
     });
-    document.getElementById("quantitaInput").addEventListener("input", e => {
-      showSuggestions(fuseQuantita, e.target.value, "suggerimentiQuantita", "quantitaInput", false);
+    document.getElementById('quantitaInput').addEventListener('input', e => {
+      showSuggestions(fuseQuantita, e.target.value, 'suggerimentiQuantita', 'quantitaInput', false);
     });
 
-    document.getElementById("peso").addEventListener("focus", () => { document.getElementById("peso").value = ""; });
-    document.getElementById("numeroPorzioni").addEventListener("focus", () => { document.getElementById("numeroPorzioni").value = ""; });
+    document.getElementById('peso').addEventListener('focus', () => { document.getElementById('peso').value = ''; });
+    document.getElementById('numeroPorzioni').addEventListener('focus', () => { document.getElementById('numeroPorzioni').value = ''; });
 
     // Invio con Enter
     document.querySelectorAll('#peso, #numeroPorzioni, #alimentoInput, #quantitaInput').forEach(el => {
@@ -245,7 +203,7 @@ Verifica i nomi dei file e l\'estensione (.json).';
         const vv = window.visualViewport;
         if (vv) {
           const occluded = Math.max(0, window.innerHeight - vv.height);
-          document.body.style.paddingBottom = (occluded ? occluded + 16 : 0) + "px";
+          document.body.style.paddingBottom = (occluded ? occluded + 16 : 0) + 'px';
         }
 
         const targetY = (window.scrollY || window.pageYOffset) + rect.top - extraOffset;
