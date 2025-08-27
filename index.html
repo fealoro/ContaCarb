@@ -93,7 +93,7 @@
     (async () => {
       try {
         const [a, q] = await Promise.all([
-          loadDataset(['alimenti_ig.json','AlimentiIG.json','AlimentiIG']),
+          loadDataset(['alimenti_ig.json']),
           loadDataset(['quantita_ig.json','QuantitaIG.json','QuantitaIG'])
         ]);
         alimenti = Array.isArray(a) ? a : (a.data || []);
