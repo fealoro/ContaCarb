@@ -9,20 +9,21 @@
     body {font-family: system-ui, sans-serif; margin: 0; padding: 20px; background-color: #f8f8f8; color: #333;}
     h2 {text-align: center; margin-bottom: 10px;}
     .version {text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px;}
-    .container {max-width: 500px; margin: auto; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);}
-    .tab-buttons {display: flex; justify-content: space-between; margin-bottom: 20px;}
-    .tab-button {flex: 1; text-align: center; padding: 12px; background-color: #e0e0e0; border: 1px solid #ccc; cursor: pointer; border-radius: 8px; margin-right: 6px; font-weight: bold;}
-    .tab-button:last-child {margin-right: 0;}
-    .tab-button.active {background-color: #007bff; color: white; border-color: #007bff;}
-    label {font-weight: 600; margin-top: 12px; display: block;}
-    input {width: 100%; padding: 10px; font-size: 1em; margin-top: 6px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;}
-    .suggestions {border: 1px solid #ccc; border-top: none; max-height: 150px; overflow-y: auto; background: white; position: absolute; width: 100%; z-index: 999;}
-    .suggestion {padding: 10px; cursor: pointer;}
-    .suggestion:hover {background-color: #f0f0f0;}
-    button {margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1em; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;}
-    button:hover {background-color: #0056b3;}
-    .result {margin-top: 24px; text-align: center; font-size: 1.6em; font-weight: bold; color: #28a745;}
-    .form-section {display: none; position: relative;}
+    .container {max-width: 500px; margin: auto; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);} 
+    .tab-buttons {display: flex; justify-content: space-between; margin-bottom: 20px;} 
+    .tab-button {flex: 1; text-align: center; padding: 12px; background-color: #e0e0e0; border: 1px solid #ccc; cursor: pointer; border-radius: 8px; margin-right: 6px; font-weight: bold;} 
+    .tab-button:last-child {margin-right: 0;} 
+    .tab-button.active {background-color: #007bff; color: white; border-color: #007bff;} 
+    label {font-weight: 600; margin-top: 12px; display: block;} 
+    input {width: 100%; padding: 10px; font-size: 1em; margin-top: 6px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;} 
+    .suggestions {border: 1px solid #ccc; border-top: none; max-height: 150px; overflow-y: auto; background: white; position: absolute; width: 100%; z-index: 999;} 
+    .suggestion {padding: 10px; cursor: pointer;} 
+    .suggestion:hover {background-color: #f0f0f0;} 
+    button {margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1em; background-color: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;} 
+    button:hover {background-color: #0056b3;} 
+    .result {margin-top: 24px; text-align: center; font-size: 1.6em; font-weight: bold; color: #28a745;} 
+    .gl {font-size: 0.6em; color: #555; margin-left: 8px; vertical-align: baseline;}
+    .form-section {display: none; position: relative;} 
 
     /* --- patch per scroll su mobile (soluzione 3) --- */
     html, body { min-height: 120dvh; }
@@ -32,7 +33,7 @@
 <body>
   <div class="container">
     <h2>Conta Carboidrati</h2>
-    <div class="version">v1.12c - 2025-08-16</div>
+    <div class="version">v1.13.1 (GL-IG) - 2025-08-27</div>
 
     <div class="tab-buttons">
       <div id="tabPeso" class="tab-button active" onclick="selectTab('peso')">Peso</div>
@@ -65,12 +66,13 @@
     let alimenti = [], quantita = [];
     let fuseAlimenti, fuseQuantita;
 
-    fetch('alimenti.json').then(r => r.json()).then(data => {
+    // Carica i dataset. Se presenti, gli oggetti possono avere: { nome, carbo, ig }
+    fetch('AlimentiIG.json').then(r => r.json()).then(data => {
       alimenti = data;
       fuseAlimenti = new Fuse(data, { keys: ['nome'], threshold: 0.3 });
     });
 
-    fetch('quantita.json').then(r => r.json()).then(data => {
+    fetch('QuantitaIG.json').then(r => r.json()).then(data => {
       quantita = data;
       fuseQuantita = new Fuse(data, { keys: ['nome'], threshold: 0.3 });
     });
@@ -130,8 +132,16 @@
       const alimento = dataset.length > 0 ? dataset[0].item : null;
 
       if (alimento && !isNaN(inputVal)) {
+        // carboidrati (g) arrotondati
         const carbo = isPeso ? Math.round(alimento.carbo * inputVal / 100) : Math.round(alimento.carbo * inputVal);
-        document.getElementById("output").innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + carbo + " g</span>";
+        // carico glicemico = (carbo in grammi * IG) / 100, se IG presente
+        let glFrag = '';
+        const ig = Number(alimento.IG_stimato);
+        if (!Number.isNaN(ig)) {
+          const gl = Math.round((carbo * ig) / 100);
+          glFrag = ` <span class="gl" title="Carico glicemico = carbo (g) × IG_stimato / 100">(CG: ${gl})</span>`;
+        }
+        document.getElementById("output").innerHTML = "Carboidrati totali:<br><span style='font-size: 2em; color: #dc3545'>" + carbo + " g</span>" + glFrag;
       } else {
         document.getElementById("output").innerText = "Inserisci valori validi.";
       }
