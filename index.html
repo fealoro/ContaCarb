@@ -35,7 +35,7 @@
 <body>
   <div class="container">
     <h2>Conta Carboidrati</h2>
-    <div class="version">v1.15.1 (GL-IG cachebust) - 2025-08-27</div>
+    <div class="version">v1.15.2 (GL-IG cachebust) - 2025-08-27</div>
 
     <div class="tab-buttons">
       <div id="tabPeso" class="tab-button active" onclick="selectTab('peso')">Peso</div>
@@ -69,11 +69,13 @@
     let fuseAlimenti, fuseQuantita;
 
     // Carica i dataset (GitHub Pages) con cache bust
+    const VERSION = '1.15.2';
     async function loadDatasets() {
       try {
+        const ts = Date.now();
         const [aRes, qRes] = await Promise.all([
-          fetch('alimenti_ig.json?v=1.15.1', { cache: 'no-store' }),
-          fetch('quantita_ig.json?v=1.15.1', { cache: 'no-store' })
+          fetch(`alimenti_ig.json?v=${VERSION}&ts=${ts}`, { cache: 'no-store' }),
+          fetch(`quantita_ig.json?v=${VERSION}&ts=${ts}`, { cache: 'no-store' })
         ]);
         if (!aRes.ok) throw new Error('alimenti_ig.json: HTTP ' + aRes.status);
         if (!qRes.ok) throw new Error('quantita_ig.json: HTTP ' + qRes.status);
@@ -232,4 +234,11 @@
     if (window.visualViewport) {
       const reScrollIfFocused = () => {
         const a = document.activeElement;
-        if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXT
+        if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA')) bringInputHigh(a);
+      };
+      visualViewport.addEventListener('resize', reScrollIfFocused);
+      visualViewport.addEventListener('scroll', reScrollIfFocused);
+    }
+  </script>
+</body>
+</html>
