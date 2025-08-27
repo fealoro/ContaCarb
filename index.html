@@ -66,15 +66,57 @@
     let alimenti = [], quantita = [];
     let fuseAlimenti, fuseQuantita;
 
+    // Helper robusto per caricare JSON: prova con ".json" poi senza, gestisce errori
+    async function loadDataset(candidates) {
+      if (typeof candidates === 'string') candidates = [`${candidates}.json`, candidates];
+      let lastErr;
+      for (const url of candidates) {
+        try {
+          const res = await fetch(url, { cache: 'no-store' });
+          if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+          return await res.json();
+        } catch (e) { lastErr = e; }
+      }
+      throw lastErr || new Error('Impossibile caricare dataset');
+    }.json`, baseName];
+      let lastErr;
+      for (const url of candidates) {
+        try {
+          const res = await fetch(url, { cache: 'no-store' });
+          if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+          return await res.json();
+        } catch (e) { lastErr = e; }
+      }
+      throw lastErr || new Error('Impossibile caricare ' + baseName);
+    }
+
+    (async () => {
+      try {
+        const [a, q] = await Promise.all([
+          loadDataset(['alimenti_ig.json','AlimentiIG.json','AlimentiIG']),
+          loadDataset(['quantita_ig.json','QuantitaIG.json','QuantitaIG'])
+        ]);
+        alimenti = Array.isArray(a) ? a : (a.data || []);
+        quantita = Array.isArray(q) ? q : (q.data || []);
+        fuseAlimenti = new Fuse(alimenti, { keys: ['nome'], threshold: 0.3 });
+        fuseQuantita = new Fuse(quantita, { keys: ['nome'], threshold: 0.3 });
+        const out = document.getElementById('output');
+        if (out && !out.textContent) {
+          out.innerText = `Database caricati (Peso: ${alimenti.length}, Quantità: ${quantita.length}).`;
+          setTimeout(() => { out.innerText = ''; }, 1200);
+        }
+      } catch (e) {
+        const msg = 'Errore nel caricamento dei database: ' + (e && e.message ? e.message : e);
+        console.error(msg);
+        const out = document.getElementById('output');
+        if (out) out.innerText = msg + '
+Verifica i nomi dei file e l\'estensione (.json).';
+      }
+    })();
+
     // Carica i dataset. Se presenti, gli oggetti possono avere: { nome, carbo, ig }
-    fetch('AlimentiIG.json').then(r => r.json()).then(data => {
-      alimenti = data;
-      fuseAlimenti = new Fuse(data, { keys: ['nome'], threshold: 0.3 });
     });
 
-    fetch('QuantitaIG.json').then(r => r.json()).then(data => {
-      quantita = data;
-      fuseQuantita = new Fuse(data, { keys: ['nome'], threshold: 0.3 });
     });
 
     function selectTab(tipo) {
@@ -101,7 +143,16 @@
     }
 
     function showSuggestions(fuse, query, containerId, inputId, isPeso) {
-      const results = fuse.search(query).slice(0, 5);
+      const container = document.getElementById(containerId);
+      clearSuggestions(containerId);
+      if (!fuse) {
+        const div = document.createElement('div');
+        div.className = 'suggestion';
+        div.textContent = 'Database non caricato…';
+        container.appendChild(div);
+        return;
+      }
+      const results = fuse.search(query || '').slice(0, 5);
       const container = document.getElementById(containerId);
       clearSuggestions(containerId);
       results.forEach(r => {
@@ -128,7 +179,7 @@
       const isPeso = document.getElementById("formPeso").style.display === "block";
       const nome = isPeso ? document.getElementById("alimentoInput").value : document.getElementById("quantitaInput").value;
       const inputVal = isPeso ? parseFloat(document.getElementById("peso").value) : parseFloat(document.getElementById("numeroPorzioni").value);
-      const dataset = isPeso ? fuseAlimenti.search(nome) : fuseQuantita.search(nome);
+      const dataset = (isPeso ? fuseAlimenti : fuseQuantita) ? (isPeso ? fuseAlimenti.search(nome) : fuseQuantita.search(nome)) : [];
       const alimento = dataset.length > 0 ? dataset[0].item : null;
 
       if (alimento && !isNaN(inputVal)) {
@@ -136,7 +187,7 @@
         const carbo = isPeso ? Math.round(alimento.carbo * inputVal / 100) : Math.round(alimento.carbo * inputVal);
         // carico glicemico = (carbo in grammi * IG) / 100, se IG presente
         let glFrag = '';
-        const ig = Number(alimento.IG_stimato);
+        const ig = Number(alimento.IG_stimato ?? alimento.ig ?? alimento.IG);
         if (!Number.isNaN(ig)) {
           const gl = Math.round((carbo * ig) / 100);
           glFrag = ` <span class="gl" title="Carico glicemico = carbo (g) × IG_stimato / 100">(CG: ${gl})</span>`;
