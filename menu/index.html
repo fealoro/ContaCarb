@@ -1,205 +1,111 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Menù Giornaliero • ContaCarbo (v1.5.0)</title>
+  <meta charset="UTF-8">
+  <title>Menù Giornaliero</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
   <style>
-    :root{
-      /* palette stile ContaCarbo */
-      --bg:#0e1221; --card:#151a2d; --card-2:#10162a;
-      --text:#eef2ff; --muted:#95a3c2; --line:#21294a;
-      --accent:#55a7ff; --accent-2:#1f7ff0;
-      --badge:#ffd166;
-    }
-    *{box-sizing:border-box; -webkit-tap-highlight-color: transparent}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif}
-    header{
-      position:sticky; top:0; z-index:20;
-      background:linear-gradient(180deg, rgba(14,18,33,.95), rgba(14,18,33,.78));
-      border-bottom:1px solid var(--line); backdrop-filter: blur(8px)
-    }
-    .wrap{max-width:900px;margin:0 auto;padding:12px 14px}
-    h1{margin:0 0 6px;font-size:1.08rem;letter-spacing:.2px}
-    .muted{color:var(--muted)}
-    .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#132045;border:1px solid #2b3f72;font-size:.72rem}
-    .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    select{
-      background:var(--card);color:var(--text);border:1px solid var(--line);
-      border-radius:12px;padding:10px 12px;font-size:16px;outline:none
-    }
-    main{padding:12px 14px}
-    .day{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
-    .day h2{margin:0 0 2px;font-size:1.02rem}
-    .sub{color:var(--muted);font-size:.9rem;margin:0 0 8px}
-    .meal{margin-top:12px;border-top:1px dashed var(--line);padding-top:8px}
-    .meal h3{margin:0 0 8px;font-size:.95rem;color:var(--muted)}
-    .item{
-      display:flex;justify-content:space-between;gap:10px;align-items:center;
-      padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--card-2);margin:6px 0
-    }
-    .title{font-weight:600}
-    .badge{
-      display:inline-block;margin-left:8px;
-      font-size:.75rem;padding:2px 8px;border-radius:999px;
-      background:var(--badge);color:#1a1a1a
-    }
-    .footer{color:var(--muted);font-size:.85rem;margin:14px 0;text-align:center}
-    /* mobile love */
-    @media (max-width:520px){
-      .wrap{padding:12px}
-      .item{padding:10px 12px}
-    }
+    body {font-family: system-ui, sans-serif; margin: 0; padding: 20px; background-color: #f8f8f8; color: #333;}
+    h2 {text-align: center; margin-bottom: 10px;}
+    .version {text-align: center; font-size: 0.9em; color: #888; margin-bottom: 20px;}
+    .container {max-width: 500px; margin: auto; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);}
+    label {font-weight: 600; display:block; margin-bottom: 8px;}
+    select {width: 100%; padding: 10px; font-size: 1em; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 20px; box-sizing: border-box;}
+    .day h3 {margin-top:20px; margin-bottom:8px; font-size:1em; color:#555;}
+    .item {padding:10px; border-radius:8px; margin:4px 0; background:#f2f2f2; display:flex; justify-content:space-between; align-items:center;}
+    .title {font-weight:600;}
+    .badge {font-size:.75em; padding:2px 6px; border-radius:6px; background:#ffd166; margin-left:8px;}
+    .footer {text-align:center; font-size:0.85em; color:#888; margin-top:20px;}
   </style>
 </head>
 <body>
-  <header>
-    <div class="wrap">
-      <h1>Menù Giornaliero <span class="pill">v1.5.0</span></h1>
-      <div class="toolbar">
-        <label for="daySelect" class="muted">Giorno</label>
-        <select id="daySelect" aria-label="Giorno">
-          <option value="0">Lunedì</option>
-          <option value="1">Martedì</option>
-          <option value="2">Mercoledì</option>
-          <option value="3">Giovedì</option>
-          <option value="4">Venerdì</option>
-          <option value="5">Sabato</option>
-          <option value="6">Domenica</option>
-        </select>
-        <span id="status" class="muted" role="status" aria-live="polite"></span>
-      </div>
-    </div>
-  </header>
+  <div class="container">
+    <h2>Menù Giornaliero</h2>
+    <div class="version">v1.6.0</div>
 
-  <main class="wrap">
-    <section class="day" id="dayBox" hidden>
-      <h2 id="dayTitle">—</h2>
-      <p class="sub" id="periodLabel"></p>
+    <label for="daySelect">Giorno:</label>
+    <select id="daySelect">
+      <option value="0">Lunedì</option>
+      <option value="1">Martedì</option>
+      <option value="2">Mercoledì</option>
+      <option value="3">Giovedì</option>
+      <option value="4">Venerdì</option>
+      <option value="5">Sabato</option>
+      <option value="6">Domenica</option>
+    </select>
+
+    <div class="day" id="dayBox" hidden>
+      <h3 id="dayTitle">—</h3>
       <div id="meals"></div>
-    </section>
-    <p class="footer">
-      Fonte dati: <code>menu_current.json</code> nella stessa cartella. Le note non vengono visualizzate.
-    </p>
-  </main>
+    </div>
 
-  <script>
-  (()=>{
-    const VERSION = "1.5.0";
-    const statusEl   = document.getElementById('status');
-    const daySelect  = document.getElementById('daySelect');
-    const dayBox     = document.getElementById('dayBox');
-    const dayTitle   = document.getElementById('dayTitle');
-    const periodLbl  = document.getElementById('periodLabel');
-    const mealsRoot  = document.getElementById('meals');
+    <div class="footer">Fonte: <code>menu_current.json</code></div>
+  </div>
 
-    // Giorni/Pasti come nel file JSON "piatto-centrico"
-    const dayNames  = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
-    const mealOrder = ["Colazione","Pranzo","Cena","Snack"]; // Maiuscole (coerente con il tuo JSON)
-    const mealLabels= {"Colazione":"Colazione","Pranzo":"Pranzo","Cena":"Cena","Snack":"Snack"};
+<script>
+(async()=>{
+  const dayNames = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
+  const mealOrder = ["Colazione","Pranzo","Cena","Snack"];
+  const sel = document.getElementById('daySelect');
+  const dayBox = document.getElementById('dayBox');
+  const dayTitle = document.getElementById('dayTitle');
+  const mealsRoot = document.getElementById('meals');
 
-    let RAW = []; // array di record: { Giorno, Data, Pasto, Alimento, Weight, Note }
+  let RAW = [];
+  try {
+    const res = await fetch('menu_current.json',{cache:'no-store'});
+    RAW = await res.json();
+  } catch(e) {
+    document.body.innerHTML = "<p>Errore nel caricamento di menu_current.json</p>";
+    return;
+  }
 
-    async function loadMenu(){
-      statusEl.textContent = "Carico menu_current.json…";
-      try{
-        const res = await fetch('menu_current.json', {cache:'no-store'});
-        if(!res.ok) throw new Error(`HTTP ${res.status}`);
-        RAW = await res.json();
-        statusEl.textContent = "OK";
-      }catch(e){
-        statusEl.textContent = "Errore: " + e.message;
-      }
-    }
-
-    function buildDayMealsMap(giornoSelezionato){
-      const byMeal = new Map(); // Pasto -> items[]
-      mealOrder.forEach(m => byMeal.set(m, []));
-      const rows = RAW.filter(r => r.Giorno === giornoSelezionato);
-      rows.forEach(r => {
-        const pasto = (r.Pasto && mealOrder.includes(r.Pasto)) ? r.Pasto : "Pranzo";
-        byMeal.get(pasto).push({
-          name:   r.Alimento || "",
-          weigh:  !!r.Weight   // boolean dal tuo campo
-          // note: r.Note || "" // intenzionalmente ignorata
-        });
-      });
-      return byMeal;
-    }
-
-    function dayDateLabel(giornoSelezionato){
-      const row = RAW.find(r => r.Giorno === giornoSelezionato && r.Data);
-      if(!row) return "";
-      const d = new Date(row.Data);
-      if(isNaN(d)) return String(row.Data);
-      const dd = String(d.getDate()).padStart(2,'0');
-      const mm = String(d.getMonth()+1).padStart(2,'0');
-      return `${dd}/${mm}`;
-    }
-
-    function renderDay(dayIdx){
-      const giorno = dayNames[dayIdx];
-      dayBox.hidden = false;
-      dayTitle.textContent = `${giorno}`;
-      periodLbl.textContent = dayDateLabel(giorno);
-      mealsRoot.innerHTML = "";
-
-      const byMeal = buildDayMealsMap(giorno);
-      let any = false;
-
-      mealOrder.forEach(m => {
-        const items = byMeal.get(m) || [];
-        if(items.length===0) return; // mostra solo pasti con elementi
-        any = true;
-
-        const sec = document.createElement('section');
-        sec.className = 'meal';
-        sec.innerHTML = `<h3>${mealLabels[m]}</h3>`;
-
-        items.forEach(it=>{
-          const row   = document.createElement('div');
-          row.className = 'item';
-          const left  = document.createElement('span');
-          left.className = 'title';
-          left.textContent = it.name || '';
-          if(it.weigh){
-            const b = document.createElement('span');
-            b.className = 'badge';
-            b.textContent = 'PESARE';
-            left.appendChild(b);
-          }
-          row.append(left);
-          sec.appendChild(row);
-        });
-
-        mealsRoot.appendChild(sec);
-      });
-
-      if(!any){
-        const p = document.createElement('p');
-        p.className = 'muted';
-        p.textContent = "Nessun piatto per questo giorno.";
-        mealsRoot.appendChild(p);
-      }
-    }
-
-    // Imposta di default il giorno corrente (Europe/Zurich): lun=0..dom=6
-    function todayIndex(){
-      const d = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Zurich' }));
-      return (d.getDay()+6)%7;
-    }
-
-    daySelect.addEventListener('change', () => {
-      renderDay(parseInt(daySelect.value,10) || 0);
+  function buildDayMealsMap(giorno){
+    const map = new Map();
+    mealOrder.forEach(m=>map.set(m, []));
+    RAW.filter(r => r.Giorno === giorno).forEach(r=>{
+      const pasto = mealOrder.includes(r.Pasto) ? r.Pasto : "Pranzo";
+      map.get(pasto).push({name:r.Alimento, weigh:!!r.Weight});
     });
+    return map;
+  }
 
-    (async ()=>{
-      await loadMenu();
-      const idx = todayIndex();
-      daySelect.value = String(idx);
-      renderDay(idx);
-    })();
-  })();
-  </script>
+  function renderDay(idx){
+    const giorno = dayNames[idx];
+    dayBox.hidden = false;
+    dayTitle.textContent = giorno;
+    mealsRoot.innerHTML = "";
+    const map = buildDayMealsMap(giorno);
+    mealOrder.forEach(m=>{
+      const items = map.get(m);
+      if(!items || items.length===0) return;
+      const sec = document.createElement('div');
+      sec.innerHTML = `<h3>${m}</h3>`;
+      items.forEach(it=>{
+        const row = document.createElement('div');
+        row.className='item';
+        const title = document.createElement('span');
+        title.className='title';
+        title.textContent = it.name;
+        if(it.weigh){
+          const b=document.createElement('span');
+          b.className='badge';
+          b.textContent='PESARE';
+          title.appendChild(b);
+        }
+        row.appendChild(title);
+        sec.appendChild(row);
+      });
+      mealsRoot.appendChild(sec);
+    });
+  }
+
+  sel.addEventListener('change', ()=>renderDay(parseInt(sel.value,10)));
+  // default: giorno corrente
+  const today = (new Date().getDay()+6)%7;
+  sel.value = today;
+  renderDay(today);
+})();
+</script>
 </body>
 </html>
