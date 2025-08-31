@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Menù Giornaliero • ContaCarbo (v1.0.0)</title>
+  <title>Menù Giornaliero • ContaCarbo (v1.1.0)</title>
   <style>
     :root{ --bg:#0f1220; --card:#161a2b; --muted:#8ca0c0; --text:#eef1ff; --accent:#4da3ff; --warn:#ffd166; --ok:#7be495; }
     *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
@@ -37,7 +37,7 @@
 <body>
   <header>
     <div class="wrap">
-      <h1>Menù Giornaliero <span class="pill">v1.0.0</span></h1>
+      <h1>Menù Giornaliero <span class="pill">v1.1.0</span></h1>
       <div class="toolbar">
         <label>Settimana: <input type="week" id="week"></label>
         <label>Giorno:
@@ -76,7 +76,7 @@
 
   <script>
   (() => {
-    const VERSION = "1.0.0";
+    const VERSION = "1.1.0";
     const STORAGE_KEY = "menu-giorno-v" + VERSION;
     const dayNames = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
     const mealOrder = ["colazione","pranzo","cena","snack"];
@@ -93,7 +93,6 @@
     const weekInput = document.getElementById('week');
     const daySelect = document.getElementById('daySelect');
 
-    // util
     function getCurrentWeekValue(date=new Date()){
       const y = date.getUTCFullYear();
       const oneJan = new Date(Date.UTC(y,0,1));
@@ -105,7 +104,7 @@
 
     function loadState(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}"); }catch(e){ return {}; } }
     function saveState(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
-    function keyFor(wk,dayIdx,meal,name){ return `${wk}|${dayIdx}|${meal}|${name}`.toLowerCase(); }
+    function k(wk,dayIdx,meal,name,field){ return `${wk}|${dayIdx}|${meal}|${name}|${field}`.toLowerCase(); }
 
     // DB carbo (fallback minimale)
     let carbsDB = {"pasta":75,"riso":79,"patate":17,"pizza":50,"pane":54,"crackers":67,"yogurt":5,"gelato":26,"budino":20,"anguria":8,"pesca":10,"zucchine":3,"insalata":3,"nuggets":15};
@@ -119,9 +118,14 @@
         if(Array.isArray(data)){
           data.forEach(it=>{
             const n = norm(it.nome||it.name||it.alimento);
-            const c = Number(it.carbo_100||it.carboidrati||it.carb);
+            const c = Number(it.carbo_100||it.carboidrati||it.carb||it.carbs_100);
             if(n && !Number.isNaN(c)) carbsDB[n]=c;
           });
+        }else if(typeof data==='object'){
+          for(const [name,val] of Object.entries(data)){
+            const c = Number(val.carbo_100||val.carboidrati||val.carb||val.carbs_100||val);
+            if(!Number.isNaN(c)) carbsDB[norm(name)]=c;
+          }
         }
       }catch{ /* fallback già definito */ }
     }
@@ -131,24 +135,26 @@
       for(const [k,v] of Object.entries(carbsDB)){ if(n.includes(k)) return v; }
       return 0;
     }
-    function formatCarbs(c){ return `${(Math.round(c*10)/10).toFixed(1)} g`; }
+    function fmt(c){ return `${(Math.round(c*10)/10).toFixed(1)} g`; }
 
     function renderDay(data, dayIdx){
       dayBox.hidden=false;
       dayTitle.textContent=`${dayNames[dayIdx]} • ${data.week||''}`;
       periodLabel.textContent=data.period||'';
       mealsRoot.innerHTML="";
-      let state=loadState();
-      let wk=data.week||"current";
-      let grand=0;
+
+      const wk=data.week||"current";
+      const state=loadState();
 
       mealOrder.forEach(meal=>{
         const items=data.menu?.[dayIdx]?.[meal]||[];
         if(items.length===0) return;
+
         const sec=document.createElement('section');
         sec.className='meal';
         sec.innerHTML=`<h3>${mealNames[meal]}</h3>`;
-        let mealTot=0;
+
+        let hasWeigh=false;
 
         items.forEach(item=>{
           const row=document.createElement('div'); row.className='item';
@@ -156,21 +162,41 @@
           const right=document.createElement('div'); right.className='right';
 
           if(item.weigh){
-            const gramsKey=keyFor(wk,dayIdx,meal,item.name);
-            const grams=Number(state[gramsKey]?.g||'');
-            const c100=guessCarbsPer100(item.name);
+            hasWeigh=true;
+            const gKey=k(wk,dayIdx,meal,item.name,'g');
+            const cKey=k(wk,dayIdx,meal,item.name,'c100');
+            const gVal=Number(state[gKey]||'');
+            const cStored=Number(state[cKey]||'');
+            const cGuess=guessCarbsPer100(item.name);
+            const cVal=!Number.isNaN(cStored)&&cStored>0?cStored:(cGuess||0);
+
             const gInput=document.createElement('input');
             gInput.type='number'; gInput.inputmode='decimal'; gInput.placeholder='g'; gInput.className='g-input';
-            if(grams) gInput.value=grams;
+            if(gVal) gInput.value=gVal;
+
             const cInput=document.createElement('input');
-            cInput.type='number'; cInput.inputmode='decimal'; cInput.placeholder='carbo/100g'; cInput.style.width='120px'; cInput.value=c100||0;
+            cInput.type='number'; cInput.inputmode='decimal'; cInput.placeholder='carbo/100g'; cInput.style.width='120px'; cInput.value=cVal||0;
+
             const chip=document.createElement('span'); chip.className='chip'; chip.textContent='PESARE';
+
             const row1=document.createElement('div'); row1.className='row'; row1.append(chip,gInput,cInput);
+
             const row2=document.createElement('div'); row2.className='row';
-            const note=document.createElement('span'); note.className='note'; note.textContent=item.note||''; 
+            const note=document.createElement('span'); note.className='note'; note.textContent=item.note||'';
             const carbOut=document.createElement('strong'); carbOut.style.marginLeft='auto';
-            function recalc(){ const g=Number(gInput.value||0); const c=Number(cInput.value||0); const carb=g*c/100; carbOut.textContent=formatCarbs(carb); state[gramsKey]={g}; saveState(state); computeTotals(); }
-            gInput.addEventListener('input',recalc); cInput.addEventListener('input',recalc);
+
+            function updateCarb(){
+              const g=Number(gInput.value||0), c=Number(cInput.value||0);
+              carbOut.textContent=fmt(g*c/100);
+              // persist both
+              state[gKey]=g; state[cKey]=c; saveState(state);
+              computeTotals(); // update totals in-place
+            }
+            gInput.addEventListener('input',updateCarb);
+            cInput.addEventListener('input',updateCarb);
+            // initial value
+            updateCarb();
+
             row2.append(note,carbOut);
             right.append(row1,row2);
             row.append(left,right); sec.appendChild(row);
@@ -179,21 +205,48 @@
             right.append(note); row.append(left,right); sec.appendChild(row);
           }
         });
+
+        // subtotal container (single, updated in-place)
+        const sub=document.createElement('div'); sub.className='tot';
+        sub.innerHTML=`<span>Totale ${mealNames[meal]}</span><span class="val" data-meal-total="${meal}">0.0 g</span>`;
+        sub.style.display = hasWeigh ? '' : 'none';
+        sec.appendChild(sub);
+
         mealsRoot.appendChild(sec);
       });
-      computeTotals();
+
+      computeTotals(); // after initial render
     }
 
     function computeTotals(){
-      let total=0;
-      mealsRoot.querySelectorAll('.meal').forEach(meal=>{
+      let dayTotal=0;
+
+      // for each meal section, compute and UPDATE existing subtotal
+      mealsRoot.querySelectorAll('.meal').forEach(mealSec=>{
         let m=0;
-        meal.querySelectorAll('.item').forEach(it=>{
-          const inputs=it.querySelectorAll('input'); if(inputs.length>=2){ const g=Number(inputs[0].value||0); const c=Number(inputs[1].value||0); if(g&&c) m+=g*c/100; }
+        mealSec.querySelectorAll('.item').forEach(it=>{
+          const inputs=it.querySelectorAll('input[type="number"]');
+          if(inputs.length>=2){
+            const g=Number(inputs[0].value||0);
+            const c=Number(inputs[1].value||0);
+            if(g>0 && c>0) m += g*c/100;
+          }
         });
-        if(m>0){ const sub=document.createElement('div'); sub.className='tot'; sub.innerHTML=`<span>Totale</span><span class="val">${formatCarbs(m)}</span>`; meal.appendChild(sub); total+=m; }
+        const subVal=mealSec.querySelector('[data-meal-total]');
+        if(subVal){
+          subVal.textContent = fmt(m);
+          // hide subtotal if zero (no weigh items filled)
+          subVal.closest('.tot').style.display = (m>0) ? '' : '';
+        }
+        dayTotal += m;
       });
-      if(total>0){ totalBox.hidden=false; totalVal.textContent=formatCarbs(total); } else { totalBox.hidden=true; }
+
+      if(dayTotal>0){
+        totalBox.hidden=false;
+        totalVal.textContent=fmt(dayTotal);
+      }else{
+        totalBox.hidden=true;
+      }
     }
 
     async function loadJSON(path){ const r=await fetch(path,{cache:'no-store'}); if(!r.ok) throw new Error(r.status); return r.json(); }
