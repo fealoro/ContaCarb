@@ -1,29 +1,36 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Menù Giornaliero • ContaCarbo (v1.4.0)</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Menù Giornaliero • ContaCarbo (v1.5.0)</title>
   <style>
     :root{
+      /* palette stile ContaCarbo */
       --bg:#0e1221; --card:#151a2d; --card-2:#10162a;
       --text:#eef2ff; --muted:#95a3c2; --line:#21294a;
-      --accent:#55a7ff;
+      --accent:#55a7ff; --accent-2:#1f7ff0;
+      --badge:#ffd166;
     }
-    *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    header{position:sticky;top:0;background:linear-gradient(180deg,rgba(14,18,33,.95),rgba(14,18,33,.7));backdrop-filter:blur(8px);z-index:10;border-bottom:1px solid var(--line)}
-    .wrap{max-width:860px;margin:0 auto;padding:12px 14px}
-    h1{margin:0 0 6px;font-size:1.1rem;letter-spacing:.2px}
+    *{box-sizing:border-box; -webkit-tap-highlight-color: transparent}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif}
+    header{
+      position:sticky; top:0; z-index:20;
+      background:linear-gradient(180deg, rgba(14,18,33,.95), rgba(14,18,33,.78));
+      border-bottom:1px solid var(--line); backdrop-filter: blur(8px)
+    }
+    .wrap{max-width:900px;margin:0 auto;padding:12px 14px}
+    h1{margin:0 0 6px;font-size:1.08rem;letter-spacing:.2px}
+    .muted{color:var(--muted)}
     .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#132045;border:1px solid #2b3f72;font-size:.72rem}
     .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     select{
-      background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:12px;
-      padding:10px 12px;font-size:16px;outline:none
+      background:var(--card);color:var(--text);border:1px solid var(--line);
+      border-radius:12px;padding:10px 12px;font-size:16px;outline:none
     }
     main{padding:12px 14px}
     .day{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
-    .day h2{margin:0 0 2px;font-size:1.05rem}
+    .day h2{margin:0 0 2px;font-size:1.02rem}
     .sub{color:var(--muted);font-size:.9rem;margin:0 0 8px}
     .meal{margin-top:12px;border-top:1px dashed var(--line);padding-top:8px}
     .meal h3{margin:0 0 8px;font-size:.95rem;color:var(--muted)}
@@ -32,15 +39,23 @@
       padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--card-2);margin:6px 0
     }
     .title{font-weight:600}
-    .badge{font-size:.75em;padding:2px 6px;border-radius:6px;background:#ffd166;color:#000;margin-left:8px}
-    .muted{color:var(--muted)}
+    .badge{
+      display:inline-block;margin-left:8px;
+      font-size:.75rem;padding:2px 8px;border-radius:999px;
+      background:var(--badge);color:#1a1a1a
+    }
     .footer{color:var(--muted);font-size:.85rem;margin:14px 0;text-align:center}
+    /* mobile love */
+    @media (max-width:520px){
+      .wrap{padding:12px}
+      .item{padding:10px 12px}
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap">
-      <h1>Menù Giornaliero <span class="pill">v1.4.0</span></h1>
+      <h1>Menù Giornaliero <span class="pill">v1.5.0</span></h1>
       <div class="toolbar">
         <label for="daySelect" class="muted">Giorno</label>
         <select id="daySelect" aria-label="Giorno">
@@ -64,13 +79,13 @@
       <div id="meals"></div>
     </section>
     <p class="footer">
-      Fonte dati: <code>menu_current.json</code> (stessa cartella).
+      Fonte dati: <code>menu_current.json</code> nella stessa cartella. Le note non vengono visualizzate.
     </p>
   </main>
 
   <script>
   (()=>{
-    const VERSION = "1.4.0";
+    const VERSION = "1.5.0";
     const statusEl   = document.getElementById('status');
     const daySelect  = document.getElementById('daySelect');
     const dayBox     = document.getElementById('dayBox');
@@ -78,66 +93,63 @@
     const periodLbl  = document.getElementById('periodLabel');
     const mealsRoot  = document.getElementById('meals');
 
-    // Giorni/Pasti attesi nel JSON
+    // Giorni/Pasti come nel file JSON "piatto-centrico"
     const dayNames  = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
-    const mealOrder = ["Colazione","Pranzo","Cena","Snack"]; // notare maiuscole come nel PDF/tuo file
+    const mealOrder = ["Colazione","Pranzo","Cena","Snack"]; // Maiuscole (coerente con il tuo JSON)
     const mealLabels= {"Colazione":"Colazione","Pranzo":"Pranzo","Cena":"Cena","Snack":"Snack"};
 
-    // Carica menu_current.json (array di record piatto-centrico)
-    let RAW = [];
+    let RAW = []; // array di record: { Giorno, Data, Pasto, Alimento, Weight, Note }
+
     async function loadMenu(){
       statusEl.textContent = "Carico menu_current.json…";
       try{
         const res = await fetch('menu_current.json', {cache:'no-store'});
         if(!res.ok) throw new Error(`HTTP ${res.status}`);
-        RAW = await res.json(); // [{Giorno, Data, Pasto, Alimento, Weight, Note}, ...]
+        RAW = await res.json();
         statusEl.textContent = "OK";
       }catch(e){
-        statusEl.textContent = "Errore: "+e.message;
+        statusEl.textContent = "Errore: " + e.message;
       }
     }
 
-    // Raggruppa per giorno→pasto a partire dall'array piatto-centrico
     function buildDayMealsMap(giornoSelezionato){
-      const byMeal = new Map(); // Pasto -> [items]
+      const byMeal = new Map(); // Pasto -> items[]
       mealOrder.forEach(m => byMeal.set(m, []));
       const rows = RAW.filter(r => r.Giorno === giornoSelezionato);
       rows.forEach(r => {
-        const pasto = r.Pasto && mealOrder.includes(r.Pasto) ? r.Pasto : "Pranzo";
+        const pasto = (r.Pasto && mealOrder.includes(r.Pasto)) ? r.Pasto : "Pranzo";
         byMeal.get(pasto).push({
           name:   r.Alimento || "",
-          weigh:  !!r.Weight,     // boolean
-          // note: r.Note || ""   // intenzionalmente ignorata: non la mostriamo
+          weigh:  !!r.Weight   // boolean dal tuo campo
+          // note: r.Note || "" // intenzionalmente ignorata
         });
       });
       return byMeal;
     }
 
-    // Ricava una data dd/mm se presente nel JSON per il giorno
     function dayDateLabel(giornoSelezionato){
       const row = RAW.find(r => r.Giorno === giornoSelezionato && r.Data);
       if(!row) return "";
-      try{
-        const d = new Date(row.Data);
-        const dd = String(d.getDate()).padStart(2,'0');
-        const mm = String(d.getMonth()+1).padStart(2,'0');
-        return `${dd}/${mm}`;
-      }catch{ return ""; }
+      const d = new Date(row.Data);
+      if(isNaN(d)) return String(row.Data);
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      return `${dd}/${mm}`;
     }
 
     function renderDay(dayIdx){
       const giorno = dayNames[dayIdx];
-      dayBox.hidden    = false;
+      dayBox.hidden = false;
       dayTitle.textContent = `${giorno}`;
       periodLbl.textContent = dayDateLabel(giorno);
       mealsRoot.innerHTML = "";
 
       const byMeal = buildDayMealsMap(giorno);
-
       let any = false;
+
       mealOrder.forEach(m => {
         const items = byMeal.get(m) || [];
-        if(items.length === 0) return; // mostra solo pasti con elementi
+        if(items.length===0) return; // mostra solo pasti con elementi
         any = true;
 
         const sec = document.createElement('section');
@@ -171,7 +183,7 @@
       }
     }
 
-    // Seleziona di default il giorno corrente (Europe/Zurich): lun=0..dom=6
+    // Imposta di default il giorno corrente (Europe/Zurich): lun=0..dom=6
     function todayIndex(){
       const d = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Zurich' }));
       return (d.getDay()+6)%7;
@@ -181,7 +193,6 @@
       renderDay(parseInt(daySelect.value,10) || 0);
     });
 
-    // Avvio
     (async ()=>{
       await loadMenu();
       const idx = todayIndex();
