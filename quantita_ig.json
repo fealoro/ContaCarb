@@ -1,5 +1,10 @@
 [
   {
+    "nome": "Budino TamTam Cioccolato",
+    "carbo": 20,
+    "IG_stimato": 60
+  },
+  {
     "nome": "Calippo Cola",
     "carbo": 21,
     "IG_stimato": 80
@@ -135,6 +140,11 @@
     "IG_stimato": 85
   },
   {
+    "nome": "Nuggets (1 crocchetta)",
+    "carbo": 3,
+    "IG_stimato": 45
+  },
+  {
     "nome": "Nui Mini",
     "carbo": 15,
     "IG_stimato": 70
@@ -168,6 +178,11 @@
     "nome": "Pan Goccioli",
     "carbo": 19,
     "IG_stimato": 75
+  },
+  {
+    "nome": "Pesca Noce (150 gr)",
+    "carbo": 15,
+    "IG_stimato": 40
   },
   {
     "nome": "Pick Up",
