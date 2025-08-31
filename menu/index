@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Menù settimanale • Viewer semplice</title>
+  <style>
+    :root{--bg:#0f1220;--card:#161a2b;--muted:#8892a6;--text:#eef1ff;--accent:#4da3ff;--warn:#ffd166}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif}
+    header{position:sticky;top:0;background:#0f1220d9;backdrop-filter:blur(8px);border-bottom:1px solid #1f2540;z-index:10}
+    .wrap{max-width:900px;margin:0 auto;padding:14px 16px}
+    h1{font-size:1.1rem;margin:0 0 8px}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    input,button,select{background:var(--card);color:var(--text);border:1px solid #2a3154;border-radius:10px;padding:10px 12px;font-size:.95rem}
+    button{cursor:pointer}
+    button.primary{background:var(--accent);border-color:transparent;color:#00122a;font-weight:600}
+    main.wrap{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+    @media(min-width:820px){main.wrap{grid-template-columns:repeat(2,1fr)}}
+    .day{background:var(--card);border:1px solid #1f2540;border-radius:14px;padding:10px}
+    .day h2{font-size:1rem;margin:0 0 6px}
+    .meal{border-top:1px dashed #2a3154;padding-top:8px;margin-top:8px}
+    .meal h3{font-size:.9rem;color:var(--muted);margin:0 0 6px}
+    .items{display:flex;flex-direction:column;gap:6px}
+    .item{display:flex;justify-content:space-between;align-items:center;background:#24304d;border:1px solid #344469;border-radius:10px;padding:8px 10px}
+    .badge{font-size:.75rem;border-radius:999px;padding:3px 8px;border:1px solid #35537a;background:#1a2740;color:#bcd9ff}
+    .muted{color:var(--muted)}
+    .footer{grid-column:1/-1;color:var(--muted);font-size:.85rem;margin:6px 0 16px}
+    .err{color:#ffb4b4}
+    .ok{color:#9ee6a7}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Menù settimanale <span class="muted">• Viewer semplice</span></h1>
+      <div class="toolbar">
+        <label for="week">Settimana:</label>
+        <input type="week" id="week">
+        <button id="loadWeek">Carica settimana</button>
+        <button class="primary" id="loadCurrent">Carica menù corrente</button>
+        <span class="muted" id="status"></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" id="grid"></main>
+  <div class="wrap footer">
+    Convenzione file: <code>menu_YYYY-Www.json</code> (es. <code>menu_2025-W35.json</code>) oppure <code>menu_current.json</code> per l’ultima settimana. 
+    Metti i file nella stessa cartella di questa pagina su GitHub Pages.
+  </div>
+
+  <template id="dayTpl">
+    <section class="day">
+      <h2 class="day-name"></h2>
+      <div class="meal" data-meal="colazione"><h3>Colazione</h3><div class="items"></div></div>
+      <div class="meal" data-meal="pranzo"><h3>Pranzo</h3><div class="items"></div></div>
+      <div class="meal" data-meal="cena"><h3>Cena</h3><div class="items"></div></div>
+      <div class="meal" data-meal="snack"><h3>Snack</h3><div class="items"></div></div>
+    </section>
+  </template>
+
+  <script>
+    const grid = document.getElementById('grid');
+    const dayTpl = document.getElementById('dayTpl');
+    const weekInput = document.getElementById('week');
+    const loadWeekBtn = document.getElementById('loadWeek');
+    const loadCurrentBtn = document.getElementById('loadCurrent');
+    const statusEl = document.getElementById('status');
+    const days = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
+    const mealOrder = ["colazione","pranzo","cena","snack"];
+
+    function getCurrentWeekValue(date=new Date()){
+      const y = date.getUTCFullYear();
+      const oneJan = new Date(Date.UTC(y,0,1));
+      const dayNum = Math.floor((date - oneJan) / 86400000) + 1;
+      const week = Math.ceil((dayNum + (oneJan.getUTCDay()+6)%7) / 7);
+      return `${y}-W${String(week).padStart(2,'0')}`;
+    }
+    weekInput.value = getCurrentWeekValue();
+
+    async function fetchJSON(path){
+      const res = await fetch(path, {cache:"no-store"});
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    }
+    function render(data){
+      grid.innerHTML = "";
+      const menu = data.menu;
+      days.forEach((dName, idx)=>{
+        const node = dayTpl.content.cloneNode(true);
+        node.querySelector('.day-name').textContent = dName + (data.period ? ` — ${data.period}` : "");
+        mealOrder.forEach(meal=>{
+          const itemsEl = node.querySelector(`.meal[data-meal="${meal}"] .items`);
+          const list = (menu[idx] && menu[idx][meal]) ? menu[idx][meal] : [];
+          list.forEach(item=>{
+            const row = document.createElement('div');
+            row.className = 'item';
+            const left = document.createElement('div');
+            left.textContent = item.name || "";
+            const right = document.createElement('div');
+            if(item.weigh){
+              const b = document.createElement('span');
+              b.className = 'badge';
+              b.textContent = 'PESARE';
+              right.appendChild(b);
+            }
+            if(item.note){
+              const n = document.createElement('span');
+              n.className = 'muted';
+              n.style.marginLeft = '8px';
+              n.textContent = item.note;
+              right.appendChild(n);
+            }
+            row.append(left,right);
+            itemsEl.appendChild(row);
+          });
+        });
+        grid.appendChild(node);
+      });
+    }
+
+    async function loadByWeek(week){
+      const file = `menu_${week}.json`;
+      statusEl.textContent = `Carico ${file}…`;
+      try{
+        const data = await fetchJSON(file);
+        render(data);
+        statusEl.textContent = `OK — ${file}`;
+      }catch(e){
+        statusEl.textContent = `Errore a leggere ${file}: ${e.message}`;
+      }
+    }
+    async function loadCurrent(){
+      const file = `menu_current.json`;
+      statusEl.textContent = `Carico ${file}…`;
+      try{
+        const data = await fetchJSON(file);
+        render(data);
+        statusEl.textContent = `OK — ${file}`;
+        if(data.week){ weekInput.value = data.week; }
+      }catch(e){
+        statusEl.textContent = `Errore a leggere ${file}: ${e.message}`;
+      }
+    }
+
+    loadWeekBtn.addEventListener('click', ()=> loadByWeek(weekInput.value));
+    loadCurrentBtn.addEventListener('click', loadCurrent);
+  </script>
+</body>
+</html>
