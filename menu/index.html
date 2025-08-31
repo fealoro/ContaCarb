@@ -43,6 +43,7 @@
   <script>
     const days = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
     const meals = ["colazione","pranzo","cena","snack"];
+    const mealNames = {colazione:"Colazione", pranzo:"Pranzo", cena:"Cena", snack:"Snack"};
     const output = document.getElementById('output');
     const statusEl = document.getElementById('status');
     const weekInput = document.getElementById('week');
@@ -70,21 +71,19 @@
       const box = document.createElement('div');
       box.className = 'day';
       box.innerHTML = `<h2>${days[dayIdx]} — ${data.period||data.week||''}</h2>`;
+      
       meals.forEach(m=>{
         const items = day[m]||[];
+        if(items.length===0) return; // 🔹 non mostrare pasti vuoti
         const sec = document.createElement('div');
         sec.className='meal';
-        sec.innerHTML = `<h3>${m.charAt(0).toUpperCase()+m.slice(1)}</h3>`;
-        if(items.length===0){
-          sec.innerHTML += "<p class='muted'>—</p>";
-        } else {
-          items.forEach(it=>{
-            const row = document.createElement('div');
-            row.className='item';
-            row.innerHTML = `<span>${it.name}</span><span>${it.weigh?'<span class="badge">PESARE</span>':''} ${it.note||''}</span>`;
-            sec.appendChild(row);
-          });
-        }
+        sec.innerHTML = `<h3>${mealNames[m]}</h3>`;
+        items.forEach(it=>{
+          const row = document.createElement('div');
+          row.className='item';
+          row.innerHTML = `<span>${it.name}</span><span>${it.weigh?'<span class="badge">PESARE</span>':''} ${it.note||''}</span>`;
+          sec.appendChild(row);
+        });
         box.appendChild(sec);
       });
       output.appendChild(box);
