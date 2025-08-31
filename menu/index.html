@@ -3,45 +3,72 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Menù Giornaliero • ContaCarbo (v1.1.0)</title>
+  <title>Menù Giornaliero • ContaCarbo (v1.2.0)</title>
   <style>
-    :root{ --bg:#0f1220; --card:#161a2b; --muted:#8ca0c0; --text:#eef1ff; --accent:#4da3ff; --warn:#ffd166; --ok:#7be495; }
-    *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-    html,body{ margin:0; padding:0; background:var(--bg); color:var(--text); font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;}
-    header{ position:sticky; top:0; background:#0f1220d9; backdrop-filter:blur(8px); border-bottom:1px solid #1f2540; z-index:10 }
-    .wrap{ max-width:860px; margin:0 auto; padding:12px 14px }
-    h1{ margin:0 0 6px; font-size:1.1rem }
-    .toolbar{ display:flex; gap:8px; flex-wrap:wrap; align-items:center }
-    input,button,select{ background:var(--card); color:var(--text); border:1px solid #2a3154; border-radius:12px; padding:10px 12px; font-size:16px; }
-    button{ cursor:pointer }
-    button.primary{ background:var(--accent); border-color:transparent; color:#00122a; font-weight:700 }
-    main{ padding:10px 14px }
-    .day{ background:var(--card); border:1px solid #1f2540; border-radius:16px; padding:12px }
-    .day h2{ margin:0 0 2px; font-size:1.05rem }
-    .sub{ color:var(--muted); font-size:.9rem; margin:0 0 8px }
-    .meal{ margin-top:12px; border-top:1px dashed #2a3154; padding-top:8px }
-    .meal h3{ margin:0 0 8px; font-size:.95rem; color:var(--muted) }
-    .item{ display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; padding:10px; border:1px solid #2a3154; border-radius:12px; background:#1a2038; margin:6px 0 }
-    .title{ font-weight:600 }
-    .right{ text-align:right }
-    .chip{ display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:3px 10px; border:1px solid #35537a; background:#1a2740; color:#bcd9ff; font-size:.8rem }
-    .note{ font-size:.85rem; color:var(--muted) }
-    .tot{ display:flex; justify-content:space-between; padding:10px; border-radius:12px; background:#0f1934; border:1px solid #243158; margin-top:8px; font-weight:700 }
-    .tot .val{ font-variant-numeric: tabular-nums }
-    .footer{ color:var(--muted); font-size:.85rem; margin:12px 0; text-align:center }
-    .pill{ display:inline-block; padding:2px 8px; border-radius:999px; background:#142042; border:1px solid #2b3c6b; font-size:.75rem }
-    .row{ display:flex; gap:8px; align-items:center; flex-wrap:wrap }
-    .g-input{ width:120px; }
+    :root{
+      /* palette simile a ContaCarbo */
+      --bg:#0e1221; --card:#151a2d; --card-2:#10162a;
+      --text:#eef2ff; --muted:#95a3c2; --line:#21294a;
+      --accent:#55a7ff; --accent-2:#1f7ff0;
+      --chip:#1b2442; --chip-br:#2a3a6a;
+      --warn:#ffd166;
+    }
+    *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    header{position:sticky;top:0;background:linear-gradient(180deg,rgba(14,18,33,.95),rgba(14,18,33,.7));backdrop-filter:blur(8px);z-index:20;border-bottom:1px solid var(--line)}
+    .wrap{max-width:860px;margin:0 auto;padding:12px 14px}
+    h1{margin:0 0 6px;font-size:1.1rem;letter-spacing:.2px}
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#132045;border:1px solid #2b3f72;font-size:.72rem}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    input,button,select{
+      background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:12px;
+      padding:10px 12px;font-size:16px;outline:none
+    }
+    button{cursor:pointer;transition:transform .05s ease}
+    button:active{transform:scale(.98)}
+    button.primary{background:var(--accent);border-color:transparent;color:#001326;font-weight:700}
+    main{padding:12px 14px}
+    .day{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
+    .day h2{margin:0 0 2px;font-size:1.05rem}
+    .sub{color:var(--muted);font-size:.9rem;margin:0 0 8px}
+    .meal{margin-top:12px;border-top:1px dashed var(--line);padding-top:8px}
+    .meal h3{margin:0 0 8px;font-size:.95rem;color:var(--muted)}
+    .item{
+      display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
+      padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--card-2);margin:6px 0
+    }
+    .title{font-weight:600}
+    .right{text-align:right}
+    .chip{
+      display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;
+      border:1px solid var(--chip-br);background:var(--chip);color:#cfe1ff;font-size:.8rem
+    }
+    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .g-input{width:120px}
+    .c-input{width:120px}
+    .note{font-size:.85rem;color:var(--muted)}
+    .tot{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:10px;border-radius:12px;background:#0e1736;border:1px solid #20315c;margin-top:10px;font-weight:700
+    }
+    .tot .val{font-variant-numeric:tabular-nums}
+    .muted{color:var(--muted)}
+    .footer{color:var(--muted);font-size:.85rem;margin:14px 0;text-align:center}
+    /* mobile spacing */
+    @media (max-width:480px){
+      .wrap{padding:12px}
+      .g-input,.c-input{width:110px}
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap">
-      <h1>Menù Giornaliero <span class="pill">v1.1.0</span></h1>
+      <h1>Menù Giornaliero <span class="pill">v1.2.0</span></h1>
       <div class="toolbar">
-        <label>Settimana: <input type="week" id="week"></label>
+        <label>Settimana: <input type="week" id="week" aria-label="Settimana"></label>
         <label>Giorno:
-          <select id="daySelect">
+          <select id="daySelect" aria-label="Giorno">
             <option value="0">Lunedì</option>
             <option value="1">Martedì</option>
             <option value="2">Mercoledì</option>
@@ -53,7 +80,7 @@
         </label>
         <button class="primary" id="loadCurrent">Menù corrente</button>
         <button id="loadWeek">Carica</button>
-        <span id="status" class="muted"></span>
+        <span id="status" class="muted" role="status" aria-live="polite"></span>
       </div>
     </div>
   </header>
@@ -69,15 +96,15 @@
       </div>
     </section>
     <p class="footer">
-      I pesi inseriti si salvano solo su questo dispositivo. <br>
-      Database carbo da <code>alimenti.json</code>.
+      I pesi inseriti si salvano solo su questo dispositivo. Database carbo da <code>alimenti.json</code>.
     </p>
   </main>
 
   <script>
   (() => {
-    const VERSION = "1.1.0";
+    const VERSION = "1.2.0";
     const STORAGE_KEY = "menu-giorno-v" + VERSION;
+
     const dayNames = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
     const mealOrder = ["colazione","pranzo","cena","snack"];
     const mealNames = {colazione:"Colazione", pranzo:"Pranzo", cena:"Cena", snack:"Snack"};
@@ -93,6 +120,7 @@
     const weekInput = document.getElementById('week');
     const daySelect = document.getElementById('daySelect');
 
+    /* ---------- utils ---------- */
     function getCurrentWeekValue(date=new Date()){
       const y = date.getUTCFullYear();
       const oneJan = new Date(Date.UTC(y,0,1));
@@ -106,156 +134,209 @@
     function saveState(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
     function k(wk,dayIdx,meal,name,field){ return `${wk}|${dayIdx}|${meal}|${name}|${field}`.toLowerCase(); }
 
-    // DB carbo (fallback minimale)
+    // DB carbo (fallback minimale, string-match normalizzato)
     let carbsDB = {"pasta":75,"riso":79,"patate":17,"pizza":50,"pane":54,"crackers":67,"yogurt":5,"gelato":26,"budino":20,"anguria":8,"pesca":10,"zucchine":3,"insalata":3,"nuggets":15};
     function norm(s){ return (s||"").toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,'').trim(); }
     async function loadCarbsDB(){
       try{
+        // percorso tipico: file nella root di ContaCarbo
         const res = await fetch('../alimenti.json',{cache:'no-store'});
         if(!res.ok) throw new Error();
         const data = await res.json();
-        carbsDB = {};
+        const out = {};
         if(Array.isArray(data)){
           data.forEach(it=>{
             const n = norm(it.nome||it.name||it.alimento);
             const c = Number(it.carbo_100||it.carboidrati||it.carb||it.carbs_100);
-            if(n && !Number.isNaN(c)) carbsDB[n]=c;
+            if(n && !Number.isNaN(c)) out[n]=c;
           });
-        }else if(typeof data==='object'){
+        }else{
           for(const [name,val] of Object.entries(data)){
             const c = Number(val.carbo_100||val.carboidrati||val.carb||val.carbs_100||val);
-            if(!Number.isNaN(c)) carbsDB[norm(name)]=c;
+            if(!Number.isNaN(c)) out[norm(name)]=c;
           }
         }
-      }catch{ /* fallback già definito */ }
+        if(Object.keys(out).length) carbsDB = out;
+        statusEl.textContent = "DB alimenti pronto";
+      }catch{
+        statusEl.textContent = "DB alimenti di fallback";
+      }
     }
     function guessCarbsPer100(name){
-      const n=norm(name);
+      const n = norm(name);
       if(carbsDB[n]!=null) return carbsDB[n];
       for(const [k,v] of Object.entries(carbsDB)){ if(n.includes(k)) return v; }
       return 0;
     }
-    function fmt(c){ return `${(Math.round(c*10)/10).toFixed(1)} g`; }
+    const fmt = (c)=> `${(Math.round(c*10)/10).toFixed(1)} g`;
 
+    /* ---------- render ---------- */
     function renderDay(data, dayIdx){
-      dayBox.hidden=false;
-      dayTitle.textContent=`${dayNames[dayIdx]} • ${data.week||''}`;
-      periodLabel.textContent=data.period||'';
-      mealsRoot.innerHTML="";
+      dayBox.hidden = false;
+      dayTitle.textContent = `${dayNames[dayIdx]} • ${data.week||''}`;
+      periodLabel.textContent = data.period || '';
+      mealsRoot.innerHTML = "";
 
-      const wk=data.week||"current";
-      const state=loadState();
+      const wk = data.week || "current";
+      const state = loadState();
 
       mealOrder.forEach(meal=>{
-        const items=data.menu?.[dayIdx]?.[meal]||[];
-        if(items.length===0) return;
+        const items = data.menu?.[dayIdx]?.[meal] || [];
+        if(items.length===0) return; // mostra solo pasti con elementi
 
-        const sec=document.createElement('section');
-        sec.className='meal';
-        sec.innerHTML=`<h3>${mealNames[meal]}</h3>`;
+        const sec = document.createElement('section');
+        sec.className = 'meal';
+        sec.innerHTML = `<h3>${mealNames[meal]}</h3>`;
 
-        let hasWeigh=false;
+        let hasWeigh = false;
 
         items.forEach(item=>{
-          const row=document.createElement('div'); row.className='item';
-          const left=document.createElement('div'); left.className='title'; left.textContent=item.name||'';
-          const right=document.createElement('div'); right.className='right';
+          const row = document.createElement('div');
+          row.className = 'item';
+
+          const left = document.createElement('div');
+          left.className = 'title';
+          left.textContent = item.name || '';
+
+          const right = document.createElement('div');
+          right.className = 'right';
 
           if(item.weigh){
-            hasWeigh=true;
-            const gKey=k(wk,dayIdx,meal,item.name,'g');
-            const cKey=k(wk,dayIdx,meal,item.name,'c100');
-            const gVal=Number(state[gKey]||'');
-            const cStored=Number(state[cKey]||'');
-            const cGuess=guessCarbsPer100(item.name);
-            const cVal=!Number.isNaN(cStored)&&cStored>0?cStored:(cGuess||0);
+            hasWeigh = true;
 
-            const gInput=document.createElement('input');
-            gInput.type='number'; gInput.inputmode='decimal'; gInput.placeholder='g'; gInput.className='g-input';
-            if(gVal) gInput.value=gVal;
+            // chiavi stato
+            const gKey = k(wk,dayIdx,meal,item.name,'g');
+            const cKey = k(wk,dayIdx,meal,item.name,'c100');
 
-            const cInput=document.createElement('input');
-            cInput.type='number'; cInput.inputmode='decimal'; cInput.placeholder='carbo/100g'; cInput.style.width='120px'; cInput.value=cVal||0;
+            // valori persistiti
+            const gSaved = Number(state[gKey]||'');
+            const cSaved = Number(state[cKey]||'');
 
-            const chip=document.createElement('span'); chip.className='chip'; chip.textContent='PESARE';
+            // stima carbo/100g da DB
+            const cGuess = guessCarbsPer100(item.name);
 
-            const row1=document.createElement('div'); row1.className='row'; row1.append(chip,gInput,cInput);
+            // input
+            const gInput = document.createElement('input');
+            gInput.type = 'number';
+            gInput.inputmode = 'decimal';
+            gInput.placeholder = 'g';
+            gInput.className = 'g-input';
+            if(gSaved) gInput.value = gSaved;
 
-            const row2=document.createElement('div'); row2.className='row';
-            const note=document.createElement('span'); note.className='note'; note.textContent=item.note||'';
-            const carbOut=document.createElement('strong'); carbOut.style.marginLeft='auto';
+            const cInput = document.createElement('input');
+            cInput.type = 'number';
+            cInput.inputmode = 'decimal';
+            cInput.placeholder = 'carbo/100g';
+            cInput.className = 'c-input';
+            cInput.value = (!Number.isNaN(cSaved) && cSaved>0) ? cSaved : (cGuess||0);
+
+            const chip = document.createElement('span');
+            chip.className = 'chip';
+            chip.textContent = 'PESARE';
+
+            const row1 = document.createElement('div');
+            row1.className = 'row';
+            row1.append(chip, gInput, cInput);
+
+            const row2 = document.createElement('div');
+            row2.className = 'row';
+            const carbOut = document.createElement('strong');
+            carbOut.style.marginLeft = 'auto';
 
             function updateCarb(){
-              const g=Number(gInput.value||0), c=Number(cInput.value||0);
-              carbOut.textContent=fmt(g*c/100);
-              // persist both
-              state[gKey]=g; state[cKey]=c; saveState(state);
-              computeTotals(); // update totals in-place
+              const g = Number(gInput.value||0);
+              const c = Number(cInput.value||0);
+              carbOut.textContent = fmt(g*c/100);
+              // persistenza
+              state[gKey] = g;
+              state[cKey] = c;
+              saveState(state);
+              computeTotals();
             }
-            gInput.addEventListener('input',updateCarb);
-            cInput.addEventListener('input',updateCarb);
-            // initial value
+            gInput.addEventListener('input', updateCarb);
+            cInput.addEventListener('input', updateCarb);
+            // init
             updateCarb();
 
-            row2.append(note,carbOut);
+            row2.append(carbOut);
             right.append(row1,row2);
-            row.append(left,right); sec.appendChild(row);
+            row.append(left,right);
+            sec.appendChild(row);
           }else{
-            const note=document.createElement('div'); note.className='note'; note.textContent=item.note||'';
-            right.append(note); row.append(left,right); sec.appendChild(row);
+            // elementi non pesati (non mostrano suggerimenti su numero/pezzi)
+            row.append(left, right);
+            sec.appendChild(row);
           }
         });
 
-        // subtotal container (single, updated in-place)
-        const sub=document.createElement('div'); sub.className='tot';
-        sub.innerHTML=`<span>Totale ${mealNames[meal]}</span><span class="val" data-meal-total="${meal}">0.0 g</span>`;
+        // Subtotale fisso del pasto
+        const sub = document.createElement('div');
+        sub.className = 'tot';
+        sub.innerHTML = `<span>Totale ${mealNames[meal]}</span><span class="val" data-meal-total="${meal}">0.0 g</span>`;
         sub.style.display = hasWeigh ? '' : 'none';
         sec.appendChild(sub);
 
         mealsRoot.appendChild(sec);
       });
 
-      computeTotals(); // after initial render
+      computeTotals();
     }
 
+    /* ---------- totals ---------- */
     function computeTotals(){
-      let dayTotal=0;
+      let dayTotal = 0;
 
-      // for each meal section, compute and UPDATE existing subtotal
       mealsRoot.querySelectorAll('.meal').forEach(mealSec=>{
-        let m=0;
+        let m = 0;
         mealSec.querySelectorAll('.item').forEach(it=>{
-          const inputs=it.querySelectorAll('input[type="number"]');
+          const inputs = it.querySelectorAll('input[type="number"]');
           if(inputs.length>=2){
-            const g=Number(inputs[0].value||0);
-            const c=Number(inputs[1].value||0);
+            const g = Number(inputs[0].value||0);
+            const c = Number(inputs[1].value||0);
             if(g>0 && c>0) m += g*c/100;
           }
         });
-        const subVal=mealSec.querySelector('[data-meal-total]');
+        const subVal = mealSec.querySelector('[data-meal-total]');
         if(subVal){
           subVal.textContent = fmt(m);
-          // hide subtotal if zero (no weigh items filled)
-          subVal.closest('.tot').style.display = (m>0) ? '' : '';
+          subVal.closest('.tot').style.display = (m>0) ? '' : subVal.closest('.tot').style.display;
         }
         dayTotal += m;
       });
 
       if(dayTotal>0){
-        totalBox.hidden=false;
-        totalVal.textContent=fmt(dayTotal);
+        totalBox.hidden = false;
+        totalVal.textContent = fmt(dayTotal);
       }else{
-        totalBox.hidden=true;
+        totalBox.hidden = true;
       }
     }
 
+    /* ---------- loaders ---------- */
     async function loadJSON(path){ const r=await fetch(path,{cache:'no-store'}); if(!r.ok) throw new Error(r.status); return r.json(); }
-    async function loadCurrent(){ statusEl.textContent="Carico..."; try{ const d=await loadJSON('menu_current.json'); renderDay(d,parseInt(daySelect.value)); statusEl.textContent="OK"; if(d.week) weekInput.value=d.week; }catch(e){ statusEl.textContent="Errore: "+e.message; } }
-    async function loadWeek(){ const wk=weekInput.value; try{ const d=await loadJSON('menu_'+wk+'.json'); renderDay(d,parseInt(daySelect.value)); statusEl.textContent="OK"; }catch(e){ statusEl.textContent="Errore"; } }
+    async function loadCurrent(){
+      statusEl.textContent = "Carico…";
+      try{
+        const d = await loadJSON('menu_current.json');
+        renderDay(d, parseInt(daySelect.value)||0);
+        statusEl.textContent = "OK";
+        if(d.week) weekInput.value = d.week;
+      }catch(e){ statusEl.textContent = "Errore: "+e.message; }
+    }
+    async function loadWeek(){
+      const wk = weekInput.value;
+      statusEl.textContent = "Carico…";
+      try{
+        const d = await loadJSON('menu_'+wk+'.json');
+        renderDay(d, parseInt(daySelect.value)||0);
+        statusEl.textContent = "OK";
+      }catch(e){ statusEl.textContent = "Errore"; }
+    }
 
-    document.getElementById('loadCurrent').onclick=loadCurrent;
-    document.getElementById('loadWeek').onclick=loadWeek;
+    document.getElementById('loadCurrent').addEventListener('click', loadCurrent);
+    document.getElementById('loadWeek').addEventListener('click', loadWeek);
 
+    // avvio
     loadCarbsDB().then(loadCurrent);
   })();
   </script>
