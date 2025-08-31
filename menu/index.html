@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Menù Giornaliero • ContaCarbo (v1.3.1)</title>
+  <title>Menù Giornaliero • ContaCarbo (v1.3.2)</title>
   <style>
     body {font-family: system-ui, sans-serif; margin:0; padding:20px; background:#f8f8f8; color:#333;}
     h1 {text-align:center; font-size:1.2em; margin-bottom:10px;}
@@ -15,7 +15,6 @@
     .meal h3 {margin:0 0 8px; font-size:1em; color:#666;}
     .item {padding:6px 10px; border-radius:8px; margin:4px 0; background:#f2f2f2; display:flex; justify-content:space-between;}
     .badge {font-size:.75em; padding:2px 6px; border-radius:6px; background:#ffd166; margin-left:8px;}
-    .note {font-size:.8em; color:#666; margin-left:8px;}
   </style>
 </head>
 <body>
@@ -79,10 +78,7 @@
         if(it.weigh){ 
           const b=document.createElement('span'); b.className='badge'; b.textContent='PESARE'; left.appendChild(b);
         }
-        const right=document.createElement('span');
-        right.className='note';
-        right.textContent=it.note||"";
-        row.append(left,right);
+        row.append(left);
         sec.appendChild(row);
       });
       mealsRoot.appendChild(sec);
