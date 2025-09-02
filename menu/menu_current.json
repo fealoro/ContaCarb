@@ -1,4 +1,4 @@
-[
+ 14[
   {
     "Giorno": "Lunedì",
     "Data": "2025-09-01",
@@ -59,7 +59,7 @@
     "Giorno": "Martedì",
     "Data": "2025-09-02",
     "Pasto": "Pranzo",
-    "Alimento": "Pesca noce",
+    "Alimento": "Pesca noce (fare 14) gr CHO",
     "Weight": true,
     "Note": ""
   },
