@@ -774,6 +774,11 @@
     "IG_stimato": 78
   },
   {
+    "nome": "patate bollite",
+    "carbo": 17,
+    "IG_stimato": 78
+  },
+  {
     "nome": "patate duchesse",
     "carbo": 20,
     "IG_stimato": 78
@@ -789,13 +794,13 @@
     "IG_stimato": 78
   },
   {
-    "nome": "patate bollite",
-    "carbo": 17,
+    "nome": "patate mantecate",
+    "carbo": 25,
     "IG_stimato": 78
   },
   {
-    "nome": "patate mantecate",
-    "carbo": 25,
+    "nome": "patate prezzemolate",
+    "carbo": 17,
     "IG_stimato": 78
   },
   {
@@ -1004,6 +1009,11 @@
     "IG_stimato": 70
   },
   {
+    "nome": "riso freddo",
+    "carbo": 17,
+    "IG_stimato": 70
+  },
+  {
     "nome": "riso in insalata",
     "carbo": 17,
     "IG_stimato": 70
@@ -1085,6 +1095,11 @@
   },
   {
     "nome": "risotto con verdura",
+    "carbo": 20,
+    "IG_stimato": 70
+  },
+  {
+    "nome": "risotto con verdurine",
     "carbo": 20,
     "IG_stimato": 70
   },
@@ -1270,6 +1285,11 @@
   {
     "nome": "torta al limone cameo",
     "carbo": 30,
+    "IG_stimato": 70
+  },
+  {
+    "nome": "torta al cioccolato",
+    "carbo": 54,
     "IG_stimato": 70
   },
   {

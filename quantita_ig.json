@@ -30,6 +30,11 @@
     "IG_stimato": 22
   },
   {
+    "nome": "Cono due palline di gelato",
+    "carbo": 45,
+    "IG_stimato": 60
+  },
+  {
     "nome": "Cono Stracciatella",
     "carbo": 27,
     "IG_stimato": 60
@@ -88,6 +93,11 @@
     "nome": "Kinder Bueno",
     "carbo": 11,
     "IG_stimato": 55
+  },
+  {
+    "nome": "Yogurt Scuola",
+    "carbo": 9,
+    "IG_stimato": 35
   },
   {
     "nome": "Limonetta",
@@ -173,6 +183,11 @@
     "nome": "Oreo Golden",
     "carbo": 15,
     "IG_stimato": 55
+  },
+  {
+    "nome": "Pallina Gelato",
+    "carbo": 20,
+    "IG_stimato": 50
   },
   {
     "nome": "Pan Goccioli",
