@@ -11,17 +11,18 @@
     .container {max-width: 500px; margin: auto; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);}
     label {font-weight: 600; display:block; margin-bottom: 8px;}
     select {width: 100%; padding: 10px; font-size: 1em; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 20px; box-sizing: border-box;}
-    .day h3 {margin-top:20px; margin-bottom:8px; font-size:1em; color:#555;}
+    .day h3 {margin: 6px 0 6px; font-size: 1.05em; text-align: center;}
+    .date {font-size: 0.9em; color: #777; margin-bottom: 8px; text-align: center;}
+    .mealTitle {margin-top:18px; margin-bottom:8px; font-size:1em; color:#555;}
     .item {padding:10px; border-radius:8px; margin:4px 0; background:#f2f2f2; display:flex; justify-content:space-between; align-items:center;}
     .title {font-weight:600;}
     .badge {font-size:.75em; padding:2px 6px; border-radius:6px; background:#ffd166; margin-left:8px;}
-    .footer {text-align:center; font-size:0.85em; color:#888; margin-top:20px;}
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Menù Giornaliero</h2>
-    <div class="version">v1.6.0</div>
+    <div class="version">v1.6.1</div>
 
     <label for="daySelect">Giorno:</label>
     <select id="daySelect">
@@ -36,27 +37,31 @@
 
     <div class="day" id="dayBox" hidden>
       <h3 id="dayTitle">—</h3>
+      <div id="dayDate" class="date"></div>
       <div id="meals"></div>
     </div>
-
-
   </div>
 
 <script>
 (async()=>{
   const dayNames = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
   const mealOrder = ["Colazione","Pranzo","Cena","Snack"];
+
   const sel = document.getElementById('daySelect');
   const dayBox = document.getElementById('dayBox');
   const dayTitle = document.getElementById('dayTitle');
+  const dayDate = document.getElementById('dayDate');
   const mealsRoot = document.getElementById('meals');
 
+  /* Carica il JSON piatto-centrico:
+     [{ Giorno, Data, Pasto, Alimento, Weight, Note }, ...] */
   let RAW = [];
   try {
     const res = await fetch('menu_current.json',{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
     RAW = await res.json();
   } catch(e) {
-    document.body.innerHTML = "<p>Errore nel caricamento di menu_current.json</p>";
+    document.body.innerHTML = "<p>Errore nel caricamento di <code>menu_current.json</code></p>";
     return;
   }
 
@@ -65,46 +70,73 @@
     mealOrder.forEach(m=>map.set(m, []));
     RAW.filter(r => r.Giorno === giorno).forEach(r=>{
       const pasto = mealOrder.includes(r.Pasto) ? r.Pasto : "Pranzo";
-      map.get(pasto).push({name:r.Alimento, weigh:!!r.Weight});
+      map.get(pasto).push({ name: r.Alimento, weigh: !!r.Weight });
     });
     return map;
+  }
+
+  function dateForDay(giorno){
+    // prende la prima Data disponibile per quel giorno
+    const row = RAW.find(r => r.Giorno === giorno && r.Data);
+    if(!row) return "";
+    // se è ISO, formatta dd/mm; se no, mostra com'è
+    const d = new Date(row.Data);
+    if(isNaN(d)) return String(row.Data);
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    return `${dd}/${mm}`;
   }
 
   function renderDay(idx){
     const giorno = dayNames[idx];
     dayBox.hidden = false;
     dayTitle.textContent = giorno;
+    dayDate.textContent = dateForDay(giorno);
     mealsRoot.innerHTML = "";
+
     const map = buildDayMealsMap(giorno);
+    let any = false;
+
     mealOrder.forEach(m=>{
-      const items = map.get(m);
-      if(!items || items.length===0) return;
-      const sec = document.createElement('div');
-      sec.innerHTML = `<h3>${m}</h3>`;
+      const items = map.get(m) || [];
+      if(!items.length) return;
+      any = true;
+
+      const title = document.createElement('div');
+      title.className = 'mealTitle';
+      title.textContent = m;
+      mealsRoot.appendChild(title);
+
       items.forEach(it=>{
         const row = document.createElement('div');
         row.className='item';
-        const title = document.createElement('span');
-        title.className='title';
-        title.textContent = it.name;
+        const name = document.createElement('span');
+        name.className='title';
+        name.textContent = it.name || '';
         if(it.weigh){
           const b=document.createElement('span');
           b.className='badge';
           b.textContent='PESARE';
-          title.appendChild(b);
+          name.appendChild(b);
         }
-        row.appendChild(title);
-        sec.appendChild(row);
+        row.appendChild(name);
+        mealsRoot.appendChild(row);
       });
-      mealsRoot.appendChild(sec);
     });
+
+    if(!any){
+      const p = document.createElement('p');
+      p.textContent = "Nessun piatto per questo giorno.";
+      mealsRoot.appendChild(p);
+    }
   }
 
-  sel.addEventListener('change', ()=>renderDay(parseInt(sel.value,10)));
-  // default: giorno corrente
-  const today = (new Date().getDay()+6)%7;
+  // Giorno corrente (Europe/Zurich): lun=0 .. dom=6
+  const today = (new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Zurich' })).getDay() + 6) % 7;
   sel.value = today;
   renderDay(today);
+
+  sel.addEventListener('change', ()=> renderDay(parseInt(sel.value,10)));
 })();
 </script>
 </body>
