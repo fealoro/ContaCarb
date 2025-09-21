@@ -1,7 +1,7 @@
 [
   {
     "Giorno": "Lunedì",
-    "Data": "2025-09-15",
+    "Data": "2025-09-22",
     "Pasto": "Pranzo",
     "Alimento": "Insalata mista",
     "Weight": false,
@@ -9,31 +9,31 @@
   },
   {
     "Giorno": "Lunedì",
-    "Data": "2025-09-15",
+    "Data": "2025-09-22",
     "Pasto": "Pranzo",
-    "Alimento": "Gnocchi al pomodoro e basilico (glutine)",
+    "Alimento": "Tortellini di carne panna prosciutto (glutine, latte, uova)",
     "Weight": true,
     "Note": ""
   },
   {
     "Giorno": "Lunedì",
-    "Data": "2025-09-15",
+    "Data": "2025-09-22",
     "Pasto": "Pranzo",
-    "Alimento": "Carote a rondelle",
+    "Alimento": "Spinaci",
     "Weight": false,
     "Note": ""
   },
   {
     "Giorno": "Lunedì",
-    "Data": "2025-09-15",
+    "Data": "2025-09-22",
     "Pasto": "Pranzo",
-    "Alimento": "Ricottina alla frutta (latte)",
+    "Alimento": "Mela",
     "Weight": true,
     "Note": ""
   },
   {
     "Giorno": "Martedì",
-    "Data": "2025-09-16",
+    "Data": "2025-09-23",
     "Pasto": "Pranzo",
     "Alimento": "Insalata verde",
     "Weight": false,
@@ -41,39 +41,39 @@
   },
   {
     "Giorno": "Martedì",
-    "Data": "2025-09-16",
+    "Data": "2025-09-23",
     "Pasto": "Pranzo",
-    "Alimento": "Sminuzzato di pollo al curry CH (latte)",
+    "Alimento": "Arrosto CH (glutine, latte)",
     "Weight": false,
     "Note": ""
   },
   {
     "Giorno": "Martedì",
-    "Data": "2025-09-16",
+    "Data": "2025-09-23",
     "Pasto": "Pranzo",
-    "Alimento": "Spätzli (glutine, uova)",
+    "Alimento": "Purè (latte)",
     "Weight": true,
     "Note": ""
   },
   {
     "Giorno": "Martedì",
-    "Data": "2025-09-16",
+    "Data": "2025-09-23",
     "Pasto": "Pranzo",
-    "Alimento": "Zucchine al forno",
+    "Alimento": "Fagiolini",
     "Weight": false,
     "Note": ""
   },
   {
     "Giorno": "Martedì",
-    "Data": "2025-09-16",
+    "Data": "2025-09-23",
     "Pasto": "Pranzo",
-    "Alimento": "Uva",
+    "Alimento": "Torta di mele (glutine, latte, uova)",
     "Weight": true,
     "Note": ""
   },
   {
     "Giorno": "Giovedì",
-    "Data": "2025-09-18",
+    "Data": "2025-09-25",
     "Pasto": "Pranzo",
     "Alimento": "Insalata mista",
     "Weight": false,
@@ -81,31 +81,23 @@
   },
   {
     "Giorno": "Giovedì",
-    "Data": "2025-09-18",
+    "Data": "2025-09-25",
     "Pasto": "Pranzo",
-    "Alimento": "Risotto giallo (latte)",
+    "Alimento": "Pasta con ragù di verdure (glutine, sedano)",
     "Weight": true,
     "Note": ""
   },
   {
     "Giorno": "Giovedì",
-    "Data": "2025-09-18",
+    "Data": "2025-09-25",
     "Pasto": "Pranzo",
-    "Alimento": "Tris di cavoli",
-    "Weight": false,
-    "Note": ""
-  },
-  {
-    "Giorno": "Giovedì",
-    "Data": "2025-09-18",
-    "Pasto": "Pranzo",
-    "Alimento": "Profitterol (latte, glutine, frutta a guscio)",
+    "Alimento": "Yogurt (latte)",
     "Weight": true,
     "Note": ""
   },
   {
     "Giorno": "Venerdì",
-    "Data": "2025-09-19",
+    "Data": "2025-09-26",
     "Pasto": "Pranzo",
     "Alimento": "Insalata",
     "Weight": false,
@@ -113,25 +105,33 @@
   },
   {
     "Giorno": "Venerdì",
-    "Data": "2025-09-19",
+    "Data": "2025-09-26",
     "Pasto": "Pranzo",
-    "Alimento": "Pasta gamberetti e zucchine (glutine, crostacei)",
+    "Alimento": "Crema di zucca (latte)",
     "Weight": true,
     "Note": ""
   },
   {
     "Giorno": "Venerdì",
-    "Data": "2025-09-19",
+    "Data": "2025-09-26",
     "Pasto": "Pranzo",
-    "Alimento": "Finocchi",
+    "Alimento": "Formaggio (latte)",
     "Weight": false,
     "Note": ""
   },
   {
     "Giorno": "Venerdì",
-    "Data": "2025-09-19",
+    "Data": "2025-09-26",
     "Pasto": "Pranzo",
-    "Alimento": "Prugna",
+    "Alimento": "Focaccia (glutine)",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2025-09-26",
+    "Pasto": "Pranzo",
+    "Alimento": "Banana",
     "Weight": true,
     "Note": ""
   }
