@@ -195,6 +195,11 @@
     "IG_stimato": 70
   },
   {
+    "nome": "crema di zucca",
+    "carbo": 8,
+    "IG_stimato": 20
+  },
+  {
     "nome": "crema parmentier",
     "carbo": 10,
     "IG_stimato": 20
@@ -1316,6 +1321,11 @@
     "nome": "torta con purea castagne",
     "carbo": 50,
     "IG_stimato": 78
+  },
+  {
+    "nome": "torta di mele",
+    "carbo": 40,
+    "IG_stimato": 70
   },
   {
     "nome": "torta salata",
