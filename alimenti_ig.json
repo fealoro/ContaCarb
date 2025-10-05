@@ -1159,6 +1159,11 @@
     "IG_stimato": 0
   },
   {
+    "nome": "rosti",
+    "carbo": 15,
+    "IG_stimato": 78
+  },
+  {
     "nome": "rosti con verdure e formaggio",
     "carbo": 10,
     "IG_stimato": 78
@@ -1340,6 +1345,11 @@
   {
     "nome": "torta di mele",
     "carbo": 40,
+    "IG_stimato": 70
+  },
+  {
+    "nome": "torta nocciole e prugne",
+    "carbo": 50,
     "IG_stimato": 70
   },
   {
