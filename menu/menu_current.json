@@ -1,129 +1,121 @@
 [
   {
     "Giorno": "Lunedì",
-    "Data": "2025-10-06",
+    "Data": "2025-10-13",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2025-10-13",
+    "Pasto": "Pranzo",
+    "Alimento": "Gnocchi alla sorrentina (glutine, latte)",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2025-10-13",
+    "Pasto": "Pranzo",
+    "Alimento": "Carote a rondelle",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2025-10-13",
+    "Pasto": "Pranzo",
+    "Alimento": "Petit Suisse (latte)",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2025-10-14",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata mista con ceci",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2025-10-14",
+    "Pasto": "Pranzo",
+    "Alimento": "Polenta taragna (latte)",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2025-10-14",
+    "Pasto": "Pranzo",
+    "Alimento": "Luganighetta in umido CH",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2025-10-14",
+    "Pasto": "Pranzo",
+    "Alimento": "Kiwi",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2025-10-16",
     "Pasto": "Pranzo",
     "Alimento": "Insalata mista",
     "Weight": false,
     "Note": ""
   },
   {
-    "Giorno": "Lunedì",
-    "Data": "2025-10-06",
+    "Giorno": "Giovedì",
+    "Data": "2025-10-16",
     "Pasto": "Pranzo",
-    "Alimento": "Pasta al pomodoro (glutine, sedano)",
-    "Weight": true,
-    "Note": ""
-  },
-  {
-    "Giorno": "Lunedì",
-    "Data": "2025-10-06",
-    "Pasto": "Pranzo",
-    "Alimento": "Yogurt (latte)",
-    "Weight": true,
-    "Note": ""
-  },
-  {
-    "Giorno": "Martedì",
-    "Data": "2025-10-07",
-    "Pasto": "Pranzo",
-    "Alimento": "Insalata verde",
-    "Weight": false,
-    "Note": ""
-  },
-  {
-    "Giorno": "Martedì",
-    "Data": "2025-10-07",
-    "Pasto": "Pranzo",
-    "Alimento": "Spiedini di pollo CH",
-    "Weight": false,
-    "Note": ""
-  },
-  {
-    "Giorno": "Martedì",
-    "Data": "2025-10-07",
-    "Pasto": "Pranzo",
-    "Alimento": "Rösti di patate",
-    "Weight": true,
-    "Note": ""
-  },
-  {
-    "Giorno": "Martedì",
-    "Data": "2025-10-07",
-    "Pasto": "Pranzo",
-    "Alimento": "Fagiolini",
-    "Weight": false,
-    "Note": ""
-  },
-  {
-    "Giorno": "Martedì",
-    "Data": "2025-10-07",
-    "Pasto": "Pranzo",
-    "Alimento": "Mela",
+    "Alimento": "Zuppa di farro (glutine)",
     "Weight": true,
     "Note": ""
   },
   {
     "Giorno": "Giovedì",
-    "Data": "2025-10-09",
+    "Data": "2025-10-16",
+    "Pasto": "Pranzo",
+    "Alimento": "Formaggio (latte)",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2025-10-16",
+    "Pasto": "Pranzo",
+    "Alimento": "Torta di mele (glutine, latte, uova)",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2025-10-17",
     "Pasto": "Pranzo",
     "Alimento": "Insalata mista",
     "Weight": false,
     "Note": ""
   },
   {
-    "Giorno": "Giovedì",
-    "Data": "2025-10-09",
+    "Giorno": "Venerdì",
+    "Data": "2025-10-17",
     "Pasto": "Pranzo",
-    "Alimento": "Vellutata di zucchine (latte)",
-    "Weight": false,
-    "Note": ""
-  },
-  {
-    "Giorno": "Giovedì",
-    "Data": "2025-10-09",
-    "Pasto": "Pranzo",
-    "Alimento": "Affettato misto",
-    "Weight": false,
-    "Note": ""
-  },
-  {
-    "Giorno": "Giovedì",
-    "Data": "2025-10-09",
-    "Pasto": "Pranzo",
-    "Alimento": "Torta nocciole e prugne (glutine, latte, uova, frutta guscio)",
+    "Alimento": "Risotto con zucca (latte)",
     "Weight": true,
     "Note": ""
   },
   {
     "Giorno": "Venerdì",
-    "Data": "2025-10-10",
+    "Data": "2025-10-17",
     "Pasto": "Pranzo",
-    "Alimento": "Insalata con ceci",
-    "Weight": false,
-    "Note": ""
-  },
-  {
-    "Giorno": "Venerdì",
-    "Data": "2025-10-10",
-    "Pasto": "Pranzo",
-    "Alimento": "Merluzzo alla livornese IT (pesce)",
-    "Weight": false,
-    "Note": ""
-  },
-  {
-    "Giorno": "Venerdì",
-    "Data": "2025-10-10",
-    "Pasto": "Pranzo",
-    "Alimento": "Riso basmati con verdurine (sedano)",
-    "Weight": true,
-    "Note": ""
-  },
-  {
-    "Giorno": "Venerdì",
-    "Data": "2025-10-10",
-    "Pasto": "Pranzo",
-    "Alimento": "Panna cotta (latte)",
+    "Alimento": "Banana",
     "Weight": true,
     "Note": ""
   }
