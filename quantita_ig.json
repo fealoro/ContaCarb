@@ -210,6 +210,11 @@
     "IG_stimato": 40
   },
   {
+    "nome": "Petit Suisse",
+    "carbo": 7,
+    "IG_stimato": 60
+  },
+  {
     "nome": "Pick Up",
     "carbo": 17,
     "IG_stimato": 70
