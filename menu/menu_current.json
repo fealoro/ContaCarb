@@ -1,0 +1,50 @@
+[
+  {
+    "Giorno": "Lunedì",
+    "Data": "2025-12-22",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata mista",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2025-12-22",
+    "Pasto": "Pranzo",
+    "Alimento": "Pasta al pesto",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2025-12-22",
+    "Pasto": "Pranzo",
+    "Alimento": "Frutta mista",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2025-12-23",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata mista",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2025-12-23",
+    "Pasto": "Pranzo",
+    "Alimento": "Gnocchi alla sorrentina",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2025-12-23",
+    "Pasto": "Pranzo",
+    "Alimento": "Gelato",
+    "Weight": true,
+    "Note": ""
+  }
+]
