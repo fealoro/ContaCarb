@@ -1,0 +1,122 @@
+[
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-02-09",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-02-09",
+    "Pasto": "Pranzo",
+    "Alimento": "Tortelli tricolore di carne",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-02-09",
+    "Pasto": "Pranzo",
+    "Alimento": "Finocchi",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-02-09",
+    "Pasto": "Pranzo",
+    "Alimento": "Arancia",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-02-10",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata verde",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-02-10",
+    "Pasto": "Pranzo",
+    "Alimento": "Pasta pomodoro e basilico",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-02-10",
+    "Pasto": "Pranzo",
+    "Alimento": "Cavolfiore gratinato",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-02-10",
+    "Pasto": "Pranzo",
+    "Alimento": "Yogurt",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-02-12",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata mista",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-02-12",
+    "Pasto": "Pranzo",
+    "Alimento": "Polpettone di carne",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-02-12",
+    "Pasto": "Pranzo",
+    "Alimento": "Spätzli",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-02-12",
+    "Pasto": "Pranzo",
+    "Alimento": "Mela",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-02-13",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata mista",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-02-13",
+    "Pasto": "Pranzo",
+    "Alimento": "Pizza",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-02-13",
+    "Pasto": "Pranzo",
+    "Alimento": "Chiacchiere",
+    "Weight": true,
+    "Note": ""
+  }
+]
