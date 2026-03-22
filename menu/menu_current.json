@@ -1,0 +1,130 @@
+[
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-03-23",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-03-23",
+    "Pasto": "Pranzo",
+    "Alimento": "Risotto con taleggio",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-03-23",
+    "Pasto": "Pranzo",
+    "Alimento": "Tris di verdura",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-03-23",
+    "Pasto": "Pranzo",
+    "Alimento": "Yogurt alla frutta",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-03-24",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-03-24",
+    "Pasto": "Pranzo",
+    "Alimento": "Arrosto al forno",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-03-24",
+    "Pasto": "Pranzo",
+    "Alimento": "Purè",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-03-24",
+    "Pasto": "Pranzo",
+    "Alimento": "Broccoli all’aceto balsamico",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-03-24",
+    "Pasto": "Pranzo",
+    "Alimento": "Prugna",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-03-26",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata con ceci",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-03-26",
+    "Pasto": "Pranzo",
+    "Alimento": "Pasta pasticciata",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-03-26",
+    "Pasto": "Pranzo",
+    "Alimento": "Mela",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-03-27",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata mista",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-03-27",
+    "Pasto": "Pranzo",
+    "Alimento": "Salmone NO",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-03-27",
+    "Pasto": "Pranzo",
+    "Alimento": "Patate prezzemolate",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-03-27",
+    "Pasto": "Pranzo",
+    "Alimento": "Cake al limone",
+    "Weight": true,
+    "Note": ""
+  }
+]
