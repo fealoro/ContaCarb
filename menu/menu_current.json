@@ -1,0 +1,122 @@
+[
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-04-13",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-04-13",
+    "Pasto": "Pranzo",
+    "Alimento": "Risotto alla parmigiana",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-04-13",
+    "Pasto": "Pranzo",
+    "Alimento": "Spinaci",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-04-13",
+    "Pasto": "Pranzo",
+    "Alimento": "Yogurt con cereali",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-04-14",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata con ceci",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-04-14",
+    "Pasto": "Pranzo",
+    "Alimento": "Arrosto tonnato CH",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-04-14",
+    "Pasto": "Pranzo",
+    "Alimento": "Patate in insalata",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-04-14",
+    "Pasto": "Pranzo",
+    "Alimento": "Torta di zucca",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-04-16",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata mista",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-04-16",
+    "Pasto": "Pranzo",
+    "Alimento": "Pasta panna prosciutto piselli",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-04-16",
+    "Pasto": "Pranzo",
+    "Alimento": "Prugna",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-04-17",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata verde",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-04-17",
+    "Pasto": "Pranzo",
+    "Alimento": "Gran raviolo ricotta e spinaci",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-04-17",
+    "Pasto": "Pranzo",
+    "Alimento": "Fagiolini",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-04-17",
+    "Pasto": "Pranzo",
+    "Alimento": "Banana",
+    "Weight": true,
+    "Note": ""
+  }
+]
