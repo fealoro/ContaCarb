@@ -1,0 +1,74 @@
+[
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-04-27",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata verde",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-04-27",
+    "Pasto": "Pranzo",
+    "Alimento": "Pasta al pesto",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-04-27",
+    "Pasto": "Pranzo",
+    "Alimento": "Yogurt",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-04-28",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata mista - finocchi",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-04-28",
+    "Pasto": "Pranzo",
+    "Alimento": "Lasagne alla bolognese CH",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-04-28",
+    "Pasto": "Pranzo",
+    "Alimento": "Prugna",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-04-30",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata mista",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-04-30",
+    "Pasto": "Pranzo",
+    "Alimento": "Riso freddo",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-04-30",
+    "Pasto": "Pranzo",
+    "Alimento": "Torta di mele",
+    "Weight": true,
+    "Note": ""
+  }
+]
