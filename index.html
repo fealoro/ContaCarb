@@ -84,11 +84,38 @@
         fuseAlimenti = new Fuse(alimenti, { keys: ['nome'], threshold: 0.3 });
         fuseQuantita = new Fuse(quantita, { keys: ['nome'], threshold: 0.3 });
         console.log('[ContaCarbo] DB caricati', { alimenti: alimenti.length, quantita: quantita.length });
+      
+      prefillFromUrl();
       } catch (e) {
         console.error('Errore nel caricamento dei database', e);
       }
     }
     loadDatasets();
+
+function prefillFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const alimentoParam = params.get('alimento');
+
+  if (!alimentoParam || !fuseAlimenti) return;
+
+  const results = fuseAlimenti.search(alimentoParam);
+  if (!results.length) {
+    document.getElementById('alimentoInput').value = '';
+    document.getElementById('peso').value = '';
+    return;
+  }
+
+  const alimentoTrovato = results[0].item;
+
+  document.getElementById('tabPeso').classList.add('active');
+  document.getElementById('tabQuantita').classList.remove('active');
+  document.getElementById('formPeso').style.display = 'block';
+  document.getElementById('formQuantita').style.display = 'none';
+
+  document.getElementById('alimentoInput').value = alimentoTrovato.nome;
+  document.getElementById('peso').value = '';
+  document.getElementById('output').innerText = '';
+}
 
     function selectTab(tipo) {
       document.getElementById('tabPeso').classList.remove('active');
