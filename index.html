@@ -27,7 +27,24 @@
     .cg-dot.med  { background: #e0a800; }
     .cg-dot.high { background: #dc3545; }
     .form-section {display: none; position: relative;} 
+.menu-link {
+  display: block;
+  margin-top: 12px;
+  width: 100%;
+  padding: 12px;
+  font-size: 1em;
+  background-color: #e0e0e0;
+  color: #333;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-weight: 600;
+}
 
+.menu-link:hover {
+  background-color: #d0d0d0;
+}
     html, body { min-height: 120dvh; }
     #alimentoInput, #quantitaInput, #peso, #numeroPorzioni { scroll-margin-top: 12vh; }
   </style>
@@ -35,7 +52,7 @@
 <body>
   <div class="container">
     <h2>Conta Carboidrati</h2>
-    <div class="version">v1.15.4 (prefill da menù) - 2026-05-03</div>
+    <div class="version">v1.15.5 (link menù) - 2026-05-03</div>
 
     <div class="tab-buttons">
       <div id="tabPeso" class="tab-button active" onclick="selectTab('peso')">Peso</div>
@@ -61,6 +78,7 @@
     </div>
 
     <button onclick="calcola()">Calcola Carboidrati</button>
+    <a class="menu-link" href="menu/index.html">Torna al menù</a>
     <div class="result" id="output"></div>
   </div>
 
@@ -69,7 +87,7 @@
     let fuseAlimenti, fuseQuantita;
 
     // Carica i dataset (GitHub Pages) con cache bust
-    const VERSION = '1.15.4';
+    const VERSION = '1.15.5';
     async function loadDatasets() {
       try {
         const ts = Date.now();
