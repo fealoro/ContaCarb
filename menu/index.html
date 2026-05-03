@@ -22,7 +22,7 @@
 <body>
   <div class="container">
     <h2>Menù Giornaliero</h2>
-    <div class="version">v1.6.1</div>
+    <div class="version">v1.6.2</div>
 
     <label for="daySelect">Giorno:</label>
     <select id="daySelect">
@@ -113,14 +113,17 @@
         const name = document.createElement('span');
         name.className='title';
         name.textContent = it.name || '';
-        if(it.weigh){
-          const b=document.createElement('span');
-          b.className='badge';
-          b.textContent='PESARE';
-          name.appendChild(b);
-        }
-        row.appendChild(name);
-        mealsRoot.appendChild(row);
+if(it.weigh){
+  const link = document.createElement('a');
+  link.className = 'badge';
+  link.textContent = 'PESARE';
+  link.href = 'index.html?alimento=' + encodeURIComponent(it.name || '');
+  link.style.textDecoration = 'none';
+  link.style.color = '#333';
+  name.appendChild(link);
+}
+row.appendChild(name);
+mealsRoot.appendChild(row);
       });
     });
 
