@@ -1,0 +1,122 @@
+[
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-09-07",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-09-07",
+    "Pasto": "Pranzo",
+    "Alimento": "Trofie al pesto",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-09-07",
+    "Pasto": "Pranzo",
+    "Alimento": "Tam Tam",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-09-08",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata mista con pomodori",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-09-08",
+    "Pasto": "Pranzo",
+    "Alimento": "Frittata",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-09-08",
+    "Pasto": "Pranzo",
+    "Alimento": "Riso con brunoise",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-09-08",
+    "Pasto": "Pranzo",
+    "Alimento": "Mela",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-09-10",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-09-10",
+    "Pasto": "Pranzo",
+    "Alimento": "Spiedini di pollo CH",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-09-10",
+    "Pasto": "Pranzo",
+    "Alimento": "Patate al forno",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-09-10",
+    "Pasto": "Pranzo",
+    "Alimento": "Zucchine",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-09-10",
+    "Pasto": "Pranzo",
+    "Alimento": "Pesca noce",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-09-11",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata mista con feta",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-09-11",
+    "Pasto": "Pranzo",
+    "Alimento": "Pizza",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-09-11",
+    "Pasto": "Pranzo",
+    "Alimento": "Gelato",
+    "Weight": true,
+    "Note": ""
+  }
+]
