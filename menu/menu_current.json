@@ -1,0 +1,146 @@
+[
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-10-26",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata verde",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-10-26",
+    "Pasto": "Pranzo",
+    "Alimento": "Risotto alla zucca",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-10-26",
+    "Pasto": "Pranzo",
+    "Alimento": "Spinaci",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Lunedì",
+    "Data": "2026-10-26",
+    "Pasto": "Pranzo",
+    "Alimento": "Yogurt",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-10-27",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-10-27",
+    "Pasto": "Pranzo",
+    "Alimento": "Finocchi",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-10-27",
+    "Pasto": "Pranzo",
+    "Alimento": "Gnocchi alla romana",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-10-27",
+    "Pasto": "Pranzo",
+    "Alimento": "Affettato misto IT-CH",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Martedì",
+    "Data": "2026-10-27",
+    "Pasto": "Pranzo",
+    "Alimento": "Susina",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-10-29",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata con legumi",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-10-29",
+    "Pasto": "Pranzo",
+    "Alimento": "Pasta alla amatriciana",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-10-29",
+    "Pasto": "Pranzo",
+    "Alimento": "Zucchine",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Giovedì",
+    "Data": "2026-10-29",
+    "Pasto": "Pranzo",
+    "Alimento": "Banana",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-10-30",
+    "Pasto": "Pranzo",
+    "Alimento": "Insalata mista",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-10-30",
+    "Pasto": "Pranzo",
+    "Alimento": "Fagiolini",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-10-30",
+    "Pasto": "Pranzo",
+    "Alimento": "Nuggets di pesce DE",
+    "Weight": false,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-10-30",
+    "Pasto": "Pranzo",
+    "Alimento": "Rosti di patate",
+    "Weight": true,
+    "Note": ""
+  },
+  {
+    "Giorno": "Venerdì",
+    "Data": "2026-10-30",
+    "Pasto": "Pranzo",
+    "Alimento": "Mela",
+    "Weight": true,
+    "Note": ""
+  }
+]
